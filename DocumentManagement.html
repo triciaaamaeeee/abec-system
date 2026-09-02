@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Document Management - ABEC Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'] },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+  .panel-scrollbar::-webkit-scrollbar { width: 4px; }
+  .panel-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+  .panel-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .status-card {
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .status-card.active {
+    background-color: #0B2747;
+    color: #fff;
+    border-color: #0B2747;
+  }
+  .status-card.active .status-label,
+  .status-card.active .status-count,
+  .status-card.active .status-icon { color: #fff; }
+  .request-row.selected { background-color: #f1f5f9; }
+  .request-row:hover { background-color: #f8fafc; }
+  .timeline-line {
+    position: absolute;
+    left: 5px;
+    top: 14px;
+    bottom: -18px;
+    width: 2px;
+    background: #e2e8f0;
+  }
+  .timeline-item:last-child .timeline-line { display: none; }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+  <div class="p-6 flex items-center gap-3">
+    <img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    <div>
+      <h1 class="abec-brand-title">ABEC</h1>
+      <p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+    </div>
+  </div>
+  <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <a class="abec-nav-link" href="AdminDashboard.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Dashboard
+    </a>
+    <a class="abec-nav-link" href="ApplicantPage.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Applicants
+    </a>
+    <a class="abec-nav-link" href="AccountActivation.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Account Activation
+    </a>
+    <a class="abec-nav-link" href="CourseManagement.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Course Management
+    </a>
+    <a class="abec-nav-link abec-nav-link-active" href="DocumentManagement.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Document Management
+    </a>
+    <a class="abec-nav-link" href="StudentArchive.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Student Archive
+    </a>
+  </nav>
+  <div class="abec-sidebar-footer">
+    <div class="abec-profile-chip">
+      <div class="w-10 h-10 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-bold shrink-0" aria-hidden="true">AD</div>
+      <div class="overflow-hidden">
+        <p class="text-xs font-semibold truncate">Admin</p>
+        <p class="text-[10px] text-white/45">Administrator</p>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <a class="abec-footer-link" href="UserSettings.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        User Settings
+      </a>
+      <a class="abec-footer-link" href="../Home/SignOutPage.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Sign Out
+      </a>
+    </div>
+  </div>
+</aside>
+<!-- ========== SIDEBAR (END) ========== -->
+
+<main class="abec-main min-h-screen">
+  <h2 class="text-2xl md:text-3xl font-bold text-abec-blue mb-5">Document Management</h2>
+
+  <!-- ========== STATUS SUMMARY CARDS (BEGIN) ========== -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 mb-6" id="status-cards">
+    <button type="button" data-status="pending" onclick="filterByStatus('pending')" class="status-card active flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3.5 text-left shadow-sm">
+      <div>
+        <p class="status-label text-[10px] font-bold uppercase tracking-wide opacity-80">Pending</p>
+        <p class="status-count text-2xl font-bold mt-0.5">0</p>
+      </div>
+      <svg class="status-icon w-6 h-6 opacity-80 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button type="button" data-status="processing" onclick="filterByStatus('processing')" class="status-card flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm text-slate-700">
+      <div>
+        <p class="status-label text-[10px] font-bold uppercase tracking-wide text-slate-400">Processing</p>
+        <p class="status-count text-2xl font-bold mt-0.5 text-slate-800">0</p>
+      </div>
+      <svg class="status-icon w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button type="button" data-status="ready" onclick="filterByStatus('ready')" class="status-card flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm text-slate-700">
+      <div>
+        <p class="status-label text-[10px] font-bold uppercase tracking-wide text-slate-400">Ready</p>
+        <p class="status-count text-2xl font-bold mt-0.5 text-slate-800">0</p>
+      </div>
+      <svg class="status-icon w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button type="button" data-status="released" onclick="filterByStatus('released')" class="status-card flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm text-slate-700">
+      <div>
+        <p class="status-label text-[10px] font-bold uppercase tracking-wide text-slate-400">Released</p>
+        <p class="status-count text-2xl font-bold mt-0.5 text-slate-800">0</p>
+      </div>
+      <svg class="status-icon w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button type="button" data-status="archived" onclick="filterByStatus('archived')" class="status-card flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm text-slate-700">
+      <div>
+        <p class="status-label text-[10px] font-bold uppercase tracking-wide text-slate-400">Archived</p>
+        <p class="status-count text-2xl font-bold mt-0.5 text-slate-800">0</p>
+      </div>
+      <svg class="status-icon w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+  </div>
+  <!-- ========== STATUS SUMMARY CARDS (END) ========== -->
+
+  <!-- ========== DOCUMENT REQUESTS LIST (BEGIN) ========== -->
+  <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[calc(100vh-14rem)]">
+    <div class="px-5 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+      <h3 class="text-lg font-bold text-abec-blue">Document Requests List</h3>
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="btn-select-mode" onclick="toggleSelectMode()" class="text-xs font-bold px-3.5 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors">Select</button>
+        <button type="button" id="btn-select-all" onclick="selectAllVisible()" class="hidden text-xs font-bold px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-600 transition-colors">Select all</button>
+        <button type="button" id="btn-bulk-action" onclick="runBulkAction()" class="text-xs font-bold px-4 py-2 rounded-lg bg-abec-navy text-white hover:bg-[#1A4B7A] transition-colors">Approve</button>
+      </div>
+    </div>
+    <div class="overflow-auto flex-1 min-h-0">
+      <table class="w-full text-left">
+        <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100 sticky top-0 z-10">
+          <tr>
+            <th id="col-check" class="hidden px-4 py-3 w-10"></th>
+            <th class="px-5 py-3">Request ID</th>
+            <th class="px-5 py-3">Student Name</th>
+            <th class="px-5 py-3">Document</th>
+            <th class="px-5 py-3">Date of Request</th>
+          </tr>
+        </thead>
+        <tbody id="requests-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+      </table>
+    </div>
+  </section>
+  <!-- ========== DOCUMENT REQUESTS LIST (END) ========== -->
+</main>
+</div>
+
+<!-- ========== REQUEST DETAILS POPUP (BEGIN) ========== -->
+<div id="details-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 abec-modal-backdrop" onclick="closeDetails()"></div>
+  <div class="relative bg-white rounded-2xl border border-slate-200 shadow-lg w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
+    <div class="px-5 pt-5 pb-3 flex items-start justify-between gap-3 shrink-0 border-b border-slate-100">
+      <div>
+        <span id="detail-status-badge" class="inline-block text-[10px] font-bold uppercase px-2.5 py-0.5 rounded mb-2 bg-amber-100 text-amber-700">Pending</span>
+        <h3 class="text-xl font-bold text-abec-blue leading-tight">Request Details</h3>
+        <p id="detail-req-id" class="text-sm text-slate-500 mt-0.5">—</p>
+      </div>
+      <button type="button" onclick="closeDetails()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" aria-label="Close">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      </button>
+    </div>
+
+    <div class="px-5 py-5 overflow-y-auto panel-scrollbar flex-1 min-h-0 space-y-5">
+      <div class="bg-slate-50 rounded-xl border border-slate-100 p-4">
+        <div class="flex items-center gap-3 mb-3">
+          <div id="detail-avatar" class="w-11 h-11 rounded-lg bg-abec-navy text-white flex items-center justify-center text-sm font-bold shrink-0">—</div>
+          <div class="min-w-0">
+            <p id="detail-name" class="text-sm font-bold text-abec-blue truncate">—</p>
+            <p id="detail-student-id" class="text-xs text-slate-500">Student ID: —</p>
+          </div>
+        </div>
+        <div class="border-t border-slate-200 pt-3 grid grid-cols-2 gap-3">
+          <div>
+            <p class="text-[10px] font-bold uppercase text-slate-400 mb-0.5">Course</p>
+            <p id="detail-course" class="text-xs font-bold text-abec-blue">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold uppercase text-slate-400 mb-0.5">Contact</p>
+            <p id="detail-contact" class="text-xs font-bold text-abec-blue">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-sm text-slate-500 shrink-0">Document</p>
+          <p id="detail-document" class="text-sm font-bold text-abec-blue text-right">—</p>
+        </div>
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-sm text-slate-500 shrink-0">Purpose</p>
+          <p id="detail-purpose" class="text-sm font-semibold text-slate-800 text-right">—</p>
+        </div>
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-sm text-slate-500 shrink-0">Approval Date</p>
+          <p id="detail-approval" class="text-sm font-bold text-abec-blue text-right">—</p>
+        </div>
+      </div>
+
+      <div id="detail-notice" class="hidden"></div>
+
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-3">Status Timeline</p>
+        <ul id="detail-timeline" class="space-y-4"></ul>
+      </div>
+    </div>
+
+    <div id="detail-actions" class="px-5 py-4 border-t border-slate-100 space-y-2 shrink-0"></div>
+  </div>
+</div>
+<!-- ========== REQUEST DETAILS POPUP (END) ========== -->
+
+<script>
+  var selectMode = false;
+  var activeStatus = 'pending';
+  var activeRequestId = null;
+
+  var requests = [];
+
+  var statusBadgeClass = {
+    pending: 'bg-amber-100 text-amber-700',
+    processing: 'bg-sky-100 text-sky-700',
+    ready: 'bg-emerald-100 text-emerald-700',
+    released: 'bg-violet-100 text-violet-700',
+    archived: 'bg-rose-100 text-rose-700'
+  };
+
+  function buildTimeline(status) {
+    // Matches Photo1–Photo5 step styling
+    if (status === 'pending') {
+      return [
+        { label: 'Request Submitted', state: 'done-green', time: 'Oct 10, 09:15 AM' },
+        { label: 'Approved', state: 'current', time: 'Oct 10, 10:30 AM' },
+        { label: 'Processing', state: 'pending', time: '' },
+        { label: 'Ready for Release', state: 'pending', time: '' },
+        { label: 'Released', state: 'pending', time: '' }
+      ];
+    }
+    if (status === 'processing') {
+      return [
+        { label: 'Request Submitted', state: 'done-green', time: 'Oct 10, 09:15 AM' },
+        { label: 'Approved', state: 'done-green', time: 'Oct 10, 10:30 AM' },
+        { label: 'Processing', state: 'current', time: 'In Progress', timeClass: 'text-abec-blue' },
+        { label: 'Ready for Release', state: 'pending', time: '' },
+        { label: 'Released', state: 'pending', time: '' }
+      ];
+    }
+    if (status === 'ready') {
+      return [
+        { label: 'Request Submitted', state: 'done-green', time: 'Oct 10, 09:15 AM' },
+        { label: 'Approved', state: 'done-green', time: 'Oct 10, 10:30 AM' },
+        { label: 'Processing', state: 'done-green', time: 'Oct 11, 10:30 AM' },
+        { label: 'Ready to Release', state: 'current', time: '' },
+        { label: 'Released', state: 'pending', time: '' }
+      ];
+    }
+    if (status === 'released') {
+      return [
+        { label: 'Request Submitted', state: 'done-green', time: 'Oct 10, 09:15 AM' },
+        { label: 'Approved', state: 'done-green', time: 'Oct 10, 10:30 AM' },
+        { label: 'Processing', state: 'done-green', time: 'Oct 11, 10:30 AM' },
+        { label: 'Ready to Release', state: 'done-green', time: 'Oct 12, 10:30 AM' },
+        { label: 'Released', state: 'current', time: '' }
+      ];
+    }
+    // archived (Photo5)
+    return [
+      { label: 'Request Submitted', state: 'done-green', time: 'Oct 10, 09:15 AM' },
+      { label: 'Approved', state: 'done-green', time: 'Oct 10, 10:30 AM' },
+      { label: 'Processing', state: 'done-green', time: 'Oct 11, 10:30 AM' },
+      { label: 'Ready to Release', state: 'current', time: '' },
+      { label: 'Released', state: 'pending', time: '' }
+    ];
+  }
+
+  var bulkActions = {
+    pending: 'Approve',
+    processing: 'Ready',
+    ready: 'Released',
+    released: 'Archive'
+  };
+
+  function syncSelectActions() {
+    var selectBtn = document.getElementById('btn-select-mode');
+    var selectAllBtn = document.getElementById('btn-select-all');
+    var bulkBtn = document.getElementById('btn-bulk-action');
+    var isArchived = activeStatus === 'archived';
+    var label = bulkActions[activeStatus];
+
+    // Archived: hide all select / bulk actions
+    if (isArchived) {
+      selectMode = false;
+      selectBtn.classList.add('hidden');
+      selectAllBtn.classList.add('hidden');
+      bulkBtn.classList.add('hidden');
+      selectBtn.textContent = 'Select';
+      selectBtn.classList.remove('bg-slate-100');
+      return;
+    }
+
+    selectBtn.classList.remove('hidden');
+    if (!label) {
+      bulkBtn.classList.add('hidden');
+    } else {
+      bulkBtn.classList.remove('hidden');
+      bulkBtn.textContent = label;
+    }
+    selectAllBtn.classList.toggle('hidden', !selectMode);
+  }
+
+  function filterByStatus(status) {
+    activeStatus = status;
+    closeDetails();
+    // Reset select mode when switching status
+    if (selectMode) {
+      selectMode = false;
+      var modeBtn = document.getElementById('btn-select-mode');
+      modeBtn.textContent = 'Select';
+      modeBtn.classList.remove('bg-slate-100');
+    }
+    document.querySelectorAll('.status-card').forEach(function (card) {
+      var isActive = card.getAttribute('data-status') === status;
+      card.classList.toggle('active', isActive);
+      card.classList.toggle('bg-white', !isActive);
+      card.classList.toggle('text-slate-700', !isActive);
+      var label = card.querySelector('.status-label');
+      var count = card.querySelector('.status-count');
+      var icon = card.querySelector('.status-icon');
+      if (!isActive) {
+        label.className = 'status-label text-[10px] font-bold uppercase tracking-wide text-slate-400';
+        count.className = 'status-count text-2xl font-bold mt-0.5 text-slate-800';
+        icon.classList.add('text-slate-400');
+      } else {
+        label.className = 'status-label text-[10px] font-bold uppercase tracking-wide opacity-80';
+        count.className = 'status-count text-2xl font-bold mt-0.5';
+        icon.classList.remove('text-slate-400');
+      }
+    });
+    syncSelectActions();
+    renderTable();
+  }
+
+  function renderTable() {
+    var tbody = document.getElementById('requests-tbody');
+    var rows = requests.filter(function (r) { return r.status === activeStatus; });
+    var allowSelect = activeStatus !== 'archived' && selectMode;
+    document.getElementById('col-check').classList.toggle('hidden', !allowSelect);
+    if (activeStatus !== 'archived') {
+      document.getElementById('btn-select-all').classList.toggle('hidden', !selectMode);
+    }
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-16 text-center text-sm text-slate-400">No requests in this status.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(function (r) {
+      return '<tr class="request-row cursor-pointer" data-id="' + r.id + '" onclick="openDetails(\'' + r.id + '\')">' +
+        (allowSelect
+          ? '<td class="px-4 py-3.5" onclick="event.stopPropagation()"><input type="checkbox" class="row-check rounded border-slate-300 text-abec-navy focus:ring-abec-navy" data-id="' + r.id + '"></td>'
+          : '') +
+        '<td class="px-5 py-3.5 font-semibold text-abec-blue">#' + r.id + '</td>' +
+        '<td class="px-5 py-3.5"><div class="flex items-center gap-2.5"><span class="w-8 h-8 rounded-full bg-abec-navy text-white text-[11px] font-bold flex items-center justify-center shrink-0">' + r.initials + '</span><span class="font-medium text-slate-800">' + r.name + '</span></div></td>' +
+        '<td class="px-5 py-3.5 text-slate-600">' + r.document + '</td>' +
+        '<td class="px-5 py-3.5 text-slate-500">' + r.date + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function openDetails(id) {
+    var r = requests.find(function (x) { return x.id === id; });
+    if (!r) return;
+    activeRequestId = id;
+
+    document.getElementById('detail-req-id').textContent = '#' + r.id;
+    document.getElementById('detail-name').textContent = r.name;
+    document.getElementById('detail-student-id').textContent = 'Student ID: ' + r.studentId;
+    document.getElementById('detail-course').textContent = r.course;
+    document.getElementById('detail-contact').textContent = r.contact;
+    document.getElementById('detail-document').textContent = r.document;
+    document.getElementById('detail-purpose').textContent = r.purpose;
+    document.getElementById('detail-approval').textContent = r.approvalDate;
+    document.getElementById('detail-avatar').textContent = r.initials;
+
+    var badge = document.getElementById('detail-status-badge');
+    badge.textContent = r.status.toUpperCase();
+    badge.className = 'inline-block text-[10px] font-bold uppercase px-2.5 py-0.5 rounded mb-2 ' + (statusBadgeClass[r.status] || statusBadgeClass.pending);
+
+    // Notice banners (Ready / Archived)
+    var notice = document.getElementById('detail-notice');
+    if (r.status === 'ready') {
+      notice.className = 'bg-sky-50 border border-sky-100 rounded-lg px-3.5 py-3 flex items-start gap-2.5';
+      notice.innerHTML = '<svg class="w-4 h-4 text-abec-blue shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg><p class="text-sm text-abec-blue">Waiting for the student to claim the document.</p>';
+    } else {
+      notice.className = 'hidden';
+      notice.innerHTML = '';
+    }
+
+    var timeline = document.getElementById('detail-timeline');
+    timeline.innerHTML = buildTimeline(r.status).map(function (step) {
+      var dotClass = 'bg-slate-300';
+      if (step.state === 'done-green') dotClass = 'bg-emerald-500';
+      if (step.state === 'current') dotClass = 'bg-abec-navy';
+      var labelClass = step.state === 'pending' ? 'text-slate-400 font-medium' : 'text-slate-800 font-semibold';
+      var timeClass = step.timeClass || 'text-slate-400';
+      return '<li class="timeline-item relative pl-6">' +
+        '<span class="timeline-line"></span>' +
+        '<span class="absolute left-0 top-1.5 w-3 h-3 rounded-full ' + dotClass + ' ring-2 ring-white"></span>' +
+        '<p class="text-sm ' + labelClass + '">' + step.label + '</p>' +
+        (step.time ? '<p class="text-[11px] mt-0.5 ' + timeClass + '">' + step.time + '</p>' : '') +
+        '</li>';
+    }).join('');
+
+    // Footer actions by status
+    var actions = document.getElementById('detail-actions');
+    var checkIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>';
+    if (r.status === 'pending') {
+      actions.innerHTML =
+        '<button type="button" onclick="approveCurrent()" class="w-full inline-flex items-center justify-center gap-2 bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold py-2.5 rounded-lg transition-colors">' + checkIcon + ' Approve Request</button>' +
+        '<button type="button" onclick="rejectCurrent()" class="w-full border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-bold py-2.5 rounded-lg transition-colors">Reject</button>';
+    } else if (r.status === 'processing') {
+      actions.innerHTML =
+        '<button type="button" onclick="Ready()" class="w-full inline-flex items-center justify-center gap-2 bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold py-2.5 rounded-lg transition-colors">' + checkIcon + ' Ready</button>' +
+        '<button type="button" onclick="archiveCurrent()" class="w-full border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-bold py-2.5 rounded-lg transition-colors">Archive</button>';
+    } else if (r.status === 'ready') {
+      actions.innerHTML =
+        '<button type="button" onclick="Released()" class="w-full inline-flex items-center justify-center gap-2 bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold py-2.5 rounded-lg transition-colors">' + checkIcon + ' Released</button>' +
+        '<button type="button" onclick="archiveCurrent()" class="w-full border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-bold py-2.5 rounded-lg transition-colors">Archive</button>';
+    } else if (r.status === 'released') {
+      actions.innerHTML =
+        '<button type="button" onclick="archiveCurrent()" class="w-full inline-flex items-center justify-center gap-2 bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold py-2.5 rounded-lg transition-colors">' + checkIcon + ' Archive</button>';
+    } else {
+      // archived — info footer only (Photo5)
+      actions.innerHTML =
+        '<div class="bg-sky-50 border border-sky-100 rounded-lg px-3.5 py-3 flex items-start gap-2.5">' +
+        '<svg class="w-4 h-4 text-abec-blue shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>' +
+        '<p class="text-sm font-semibold text-abec-blue">The record is completed and stored</p></div>';
+    }
+
+    document.getElementById('details-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDetails() {
+    activeRequestId = null;
+    document.getElementById('details-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function toggleSelectMode() {
+    if (activeStatus === 'archived') return;
+    selectMode = !selectMode;
+    var btn = document.getElementById('btn-select-mode');
+    btn.textContent = selectMode ? 'Cancel' : 'Select';
+    btn.classList.toggle('bg-slate-100', selectMode);
+    syncSelectActions();
+    renderTable();
+  }
+
+  function selectAllVisible() {
+    var checks = document.querySelectorAll('.row-check');
+    if (!checks.length) return;
+    var allSelected = Array.prototype.every.call(checks, function (cb) { return cb.checked; });
+    checks.forEach(function (cb) { cb.checked = !allSelected; });
+  }
+
+  function runBulkAction() {
+    var label = bulkActions[activeStatus];
+    if (!label) return;
+
+    var checked = document.querySelectorAll('.row-check:checked');
+    if (!selectMode) {
+      alert('Turn on Select, then choose requests to ' + label.toLowerCase() + '.');
+      return;
+    }
+    if (!checked.length) {
+      alert('Select at least one request to ' + label.toLowerCase() + '.');
+      return;
+    }
+    alert(checked.length + ' request(s): ' + label + '.');
+  }
+
+  function approveCurrent() {
+    if (!activeRequestId) return;
+    alert('Approved ' + activeRequestId + '.');
+    closeDetails();
+  }
+
+  function rejectCurrent() {
+    if (!activeRequestId) return;
+    alert('Rejected ' + activeRequestId + '.');
+    closeDetails();
+  }
+
+  function Ready() {
+    if (!activeRequestId) return;
+    alert('Ready' + activeRequestId + '.');
+    closeDetails();
+  }
+
+  function Released() {
+    if (!activeRequestId) return;
+    alert('Released' + activeRequestId + '.');
+    closeDetails();
+  }
+
+  function archiveCurrent() {
+    if (!activeRequestId) return;
+    alert('Archived ' + activeRequestId + '.');
+    closeDetails();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDetails();
+  });
+
+  filterByStatus('pending');
+</script>
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+</body>
+</html>

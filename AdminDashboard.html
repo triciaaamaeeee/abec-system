@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ABEC Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            'abec-navy': '#0A2540',
+            'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+            'abec-blue': '#1A4B7A',
+            'surface': '#F7F9FC',
+            'surface-container': '#ffffff',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+
+<!-- Logo Section -->
+<div class="p-10 flex items-center gap-3">
+<img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+<div>
+<h1 class="abec-brand-title">ABEC</h1>
+<p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+</div>
+</div>
+
+<!-- Navigation -->
+<nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+<a class="abec-nav-link abec-nav-link-active" href="AdminDashboard.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Dashboard
+        </a>
+<a class="abec-nav-link" href="ApplicantPage.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Applicants
+        </a>
+<a class="abec-nav-link" href="AccountActivation.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Account Activation
+        </a>
+<a class="abec-nav-link" href="CourseManagement.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Course Management
+        </a>
+<a class="abec-nav-link" href="DocumentManagement.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Document Management
+        </a>
+<a class="abec-nav-link" href="StudentArchive.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Student Archive
+        </a>
+</nav>
+<!-- Profile Section -->
+<div class="abec-sidebar-footer">
+<div class="abec-profile-chip">
+<div class="w-10 h-10 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-bold" aria-label="Admin Profile">AD</div>
+<div class="overflow-hidden">
+<p class="text-xs font-semibold truncate">abecadmin</p>
+<p class="text-[10px] text-white/45">Admin</p>
+</div>
+</div>
+<div class="space-y-1">
+<a class="abec-footer-link" href="UserSettings.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            User Settings
+          </a>
+<a class="abec-footer-link" href="../Home/SignOutPage.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            Sign Out
+          </a>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- Main Content Area -->
+<main class="abec-main">
+<!-- BEGIN: Page Header -->
+<header class="mb-7 abec-fade-in" data-purpose="page-header">
+<div>
+<h3 class="abec-page-title">Institution Overview</h3>
+<p class="abec-page-sub">Welcome back, Admin!</p>
+</div>
+</header>
+<!-- END: Page Header -->
+<!-- BEGIN: Stats Overview -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-10" data-purpose="stats-grid">
+<!-- Total Applicants Card -->
+<div class="abec-stat-card">
+<div class="flex justify-between items-start mb-4">
+<p class="abec-label">Total Applicants</p>
+<div class="text-slate-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<h4 class="text-3xl font-bold text-slate-800">0</h4>
+<p class="text-xs text-slate-400 font-medium mt-2">No activity yet</p>
+</div>
+<!-- Pending Card -->
+<div class="abec-stat-card">
+<div class="flex justify-between items-start mb-4">
+<p class="abec-label">Pending</p>
+<div class="text-amber-500">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<h4 class="text-3xl font-bold text-amber-600">0</h4>
+<p class="text-[10px] text-slate-400 mt-2">No activity yet</p>
+</div>
+<!-- Waitlisted Card -->
+<div class="abec-stat-card">
+<div class="flex justify-between items-start mb-4">
+<p class="abec-label">Waitlisted</p>
+<div class="text-indigo-600">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<h4 class="text-3xl font-bold text-indigo-700">0</h4>
+<p class="text-[10px] text-slate-400 mt-2">No activity yet</p>
+</div>
+<!-- Approved Card -->
+<div class="abec-stat-card">
+<div class="flex justify-between items-start mb-4">
+<p class="abec-label">Approved</p>
+<div class="text-green-500">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<h4 class="text-3xl font-bold text-green-600">0</h4>
+<p class="text-[10px] text-slate-400 mt-2">No activity yet</p>
+</div>
+<!-- Rejected Card -->
+<div class="abec-stat-card">
+<div class="flex justify-between items-start mb-4">
+<p class="abec-label">Rejected</p>
+<div class="text-red-500">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<h4 class="text-3xl font-bold text-red-600">0</h4>
+<p class="text-[10px] text-slate-400 mt-2">No activity yet</p>
+</div>
+</section>
+<!-- END: Stats Overview -->
+<!-- BEGIN: Current Active Batch -->
+<section class="mb-10 admin-view" data-purpose="current-active-batch">
+  <div class="abec-card abec-card-static overflow-hidden">
+    <div class="abec-card-header">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-slate-50 text-abec-blue flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </div>
+        <div>
+          <h4 class="abec-section-title">Active Batch</h4>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-change-batch" onclick="openChangeBatchModal()" class="abec-btn abec-btn-ghost abec-btn-sm">
+          Change Batch
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+        <div>
+          <h5 id="active-batch-name" class="text-2xl font-bold text-slate-800">No Active Batch</h5>
+          <p class="text-sm text-slate-500 mt-1">Academic Year <span id="active-batch-year" class="font-semibold text-abec-blue">—</span></p>
+        </div>
+        <span id="active-batch-status" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          None
+        </span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="rounded-lg border border-slate-100 bg-slate-50/80 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Total Students</p>
+          <p id="active-batch-students" class="text-2xl font-bold text-slate-800">0</p>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50/80 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Start Date</p>
+          <p id="active-batch-start" class="text-lg font-semibold text-slate-800">—</p>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50/80 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">End Date</p>
+          <p id="active-batch-end" class="text-lg font-semibold text-slate-800">—</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- END: Current Active Batch -->
+<!-- BEGIN: Batch History Records -->
+<section class="mb-10" data-purpose="batch-history-records">
+  <div class="abec-card abec-card-static overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-slate-100 text-abec-navy flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold text-slate-800">Batch History Records</h4>
+          <p class="text-xs text-slate-500">Completed batches are archived here in read-only mode. No records are deleted.</p>
+        </div>
+      </div>
+      <span id="batch-history-count" class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">0 archived</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-slate-50/80 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100">
+          <tr>
+            <th class="px-6 py-3">Batch Name</th>
+            <th class="px-6 py-3">Academic Year</th>
+            <th class="px-6 py-3">Students</th>
+            <th class="px-6 py-3">Period</th>
+            <th class="px-6 py-3">Completed</th>
+            <th class="px-6 py-3">Status</th>
+          </tr>
+        </thead>
+        <tbody id="batch-history-body" class="divide-y divide-slate-50">
+        </tbody>
+      </table>
+      <div id="batch-history-empty" class="px-6 py-10 text-center text-sm text-slate-400 hidden">
+        No completed batches yet. When you complete the current batch, it will appear here.
+      </div>
+    </div>
+  </div>
+</section>
+<!-- END: Batch History Records -->
+<!-- BEGIN: Applicants Table -->
+<section class="abec-card abec-card-static overflow-hidden" data-purpose="applicants-table">
+<div class="p-6 border-b border-slate-100 flex justify-between items-center">
+<h4 class="text-lg font-bold text-slate-800">Recent Applicants</h4>
+<div class="flex items-center gap-3">
+<span class="text-xs font-medium text-slate-400">Filter by:</span>
+<select id="dashboard-course-filter" class="text-xs border-slate-200 rounded-md focus:ring-abec-blue" onchange="filterDashboardApplicants()">
+<option value="all">All Courses</option>
+<option value="Computer System Servicing NC II">Computer System Servicing NC II</option>
+<option value="Bookkeeping NC II">Bookkeeping NC II</option>
+<option value="Electronic Product Assembly and Servicing NC II">Electronic Product Assembly and Servicing NC II</option>
+<option value="Customer Services NC II">Customer Services NC II</option>
+</select>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left table-fixed">
+<thead class="bg-slate-50/80 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100">
+<tr>
+<th class="px-8 py-4 w-[40%]">Name</th>
+<th class="px-8 py-4 w-[40%]">Course</th>
+<th class="px-8 py-4 w-[20%]">Status</th>
+</tr>
+</thead>
+<tbody id="dashboard-applicants-body" class="divide-y divide-slate-50">
+<tr id="dashboard-no-results">
+<td colspan="3" class="px-8 py-10 text-center text-sm text-slate-400">No applicants yet.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Bar -->
+<div class="px-6 py-4 bg-slate-50/40 border-t border-slate-100/80 flex justify-between items-center">
+<p id="dashboard-showing-count" class="text-xs text-slate-500">Showing 0 of 0 applicants</p>
+<div class="flex items-center gap-1">
+<button class="p-1 border border-slate-200 rounded hover:bg-white text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<button class="w-8 py-1 text-xs font-semibold bg-abec-navy text-white rounded-lg">1</button>
+<button class="w-8 py-1 text-xs font-medium border border-slate-200 rounded hover:bg-white text-slate-600">2</button>
+<button class="w-8 py-1 text-xs font-medium border border-slate-200 rounded hover:bg-white text-slate-600">3</button>
+<button class="p-1 border border-slate-200 rounded hover:bg-white text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+</section>
+<!-- END: Applicants Table -->
+<script data-purpose="dashboard-course-filter">
+  function filterDashboardApplicants() {
+    var course = document.getElementById('dashboard-course-filter').value;
+    var rows = document.querySelectorAll('.dashboard-applicant-row');
+    var visible = 0;
+
+    rows.forEach(function (row) {
+      var match = course === 'all' || row.getAttribute('data-course') === course;
+      row.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+
+    document.getElementById('dashboard-no-results').classList.toggle('hidden', visible > 0);
+    document.getElementById('dashboard-showing-count').textContent =
+      'Showing ' + visible + ' of ' + rows.length + ' applicants';
+  }
+</script>
+<!-- BEGIN: Dashboard Footer -->
+<footer class="mt-12 abec-card abec-card-static p-8" data-purpose="institutional-footer">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="col-span-1 md:col-span-1">
+<h5 class="font-bold text-slate-800 mb-4">ABEC</h5>
+<p class="text-xs text-slate-500 leading-relaxed">Empowering growth through certified training and industry-standard assessment protocols.</p>
+</div>
+<div>
+<h6 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Resources</h6>
+<ul class="space-y-2">
+<li><a class="text-xs text-slate-600 hover:text-abec-blue" href="#">Privacy Policy</a></li>
+<li><a class="text-xs text-slate-600 hover:text-abec-blue" href="#">Terms of Service</a></li>
+<li><a class="text-xs text-slate-600 hover:text-abec-blue" href="#">Academic Calendar</a></li>
+</ul>
+</div>
+<div>
+<h6 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Support</h6>
+<ul class="space-y-2">
+<li><a class="text-xs text-slate-600 hover:text-abec-blue" href="#">Contact Support</a></li>
+<li><a class="text-xs text-slate-600 hover:text-abec-blue" href="#">Documentation</a></li>
+</ul>
+</div>
+<div class="text-right flex flex-col justify-end">
+<p class="text-[10px] text-slate-400">© 2024 ABEC Training and Assessment<br/>Center. All rights reserved.</p>
+</div>
+</div>
+</footer>
+<!-- END: Dashboard Footer -->
+</main>
+</div>
+<!-- BEGIN: Change Batch Modal -->
+<div id="modal-change-batch" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+  <div class="modal-backdrop absolute inset-0 abec-modal-backdrop" onclick="closeChangeBatchModal()"></div>
+  <div class="relative min-h-full flex items-center justify-center p-4">
+    <div class="modal-panel abec-modal w-full max-w-xl overflow-hidden border border-slate-200" role="dialog" aria-labelledby="change-batch-title">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 id="change-batch-title" class="text-lg font-bold text-slate-800">Change Batch</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Select an available batch or create a new one.</p>
+        </div>
+        <button type="button" onclick="closeChangeBatchModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" aria-label="Close">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="px-6 py-4 space-y-4">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <div class="relative flex-1">
+            <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.355-4.355M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="batch-search" type="search" placeholder="Search..." oninput="renderChangeBatchList()" class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-abec-blue focus:border-abec-blue"/>
+          </div>
+          <button type="button" onclick="openCreateBatchModal('from-change')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-abec-navy text-white hover:bg-abec-blue transition-colors whitespace-nowrap">
+            New Batch
+          </button>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Available Batches</p>
+          <div id="change-batch-available" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Archived Batches</p>
+          <div id="change-batch-archived" class="space-y-2 max-h-36 overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/60 flex justify-end gap-2">
+        <button type="button" onclick="closeChangeBatchModal()" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 hover:bg-white transition-colors">Cancel</button>
+        <button type="button" id="btn-select-batch" onclick="selectHighlightedBatch()" class="px-4 py-2 text-xs font-semibold rounded-lg bg-abec-navy text-white hover:bg-abec-blue transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>Select</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END: Change Batch Modal -->
+
+<!-- BEGIN: Complete Batch Confirmation Modal -->
+<div id="modal-complete-batch" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+  <div class="modal-backdrop absolute inset-0 abec-modal-backdrop" onclick="closeCompleteBatchModal()"></div>
+  <div class="relative min-h-full flex items-center justify-center p-4">
+    <div class="modal-panel abec-modal w-full max-w-lg overflow-hidden border border-slate-200" role="dialog" aria-labelledby="complete-batch-title">
+      <div class="px-6 pt-6 pb-2 flex flex-col items-center text-center">
+        <div class="w-14 h-14 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center mb-4">
+          <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        </div>
+        <h3 id="complete-batch-title" class="text-lg font-bold text-slate-800">Complete Current Batch?</h3>
+        <p class="text-sm text-slate-500 mt-2">You are about to complete <span id="complete-batch-label" class="font-semibold text-abec-blue">—</span>. This action cannot be undone.</p>
+      </div>
+      <div class="px-6 py-4">
+        <div class="rounded-xl border border-amber-100 bg-amber-50/60 p-4 text-left">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-2">What happens next</p>
+          <ul class="space-y-2 text-xs text-slate-600">
+            <li class="flex gap-2"><span class="text-amber-500 mt-0.5">•</span><span>Close all enrollments for the current batch.</span></li>
+            <li class="flex gap-2"><span class="text-amber-500 mt-0.5">•</span><span>Prevent adding new students to this batch.</span></li>
+            <li class="flex gap-2"><span class="text-amber-500 mt-0.5">•</span><span>Archive the batch automatically into Batch History Records.</span></li>
+            <li class="flex gap-2"><span class="text-amber-500 mt-0.5">•</span><span>Preserve all student records (no data deleted).</span></li>
+            <li class="flex gap-2"><span class="text-amber-500 mt-0.5">•</span><span>Change batch status from Active to Completed.</span></li>
+            <li class="flex gap-2"><span class="text-amber-500 mt-0.5">•</span><span>Set student accounts to Inactive / Read-Only per system policy.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/60 flex justify-end gap-2">
+        <button type="button" onclick="closeCompleteBatchModal()" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 hover:bg-white transition-colors">Cancel</button>
+        <button type="button" onclick="confirmCompleteBatch()" class="px-4 py-2 text-xs font-semibold rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm">Complete Batch</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END: Complete Batch Confirmation Modal -->
+
+<!-- BEGIN: After Completion / Create Batch Modal -->
+<div id="modal-create-batch" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+  <div class="modal-backdrop absolute inset-0 abec-modal-backdrop" onclick="closeCreateBatchModal()"></div>
+  <div class="relative min-h-full flex items-center justify-center p-4">
+    <div class="modal-panel abec-modal w-full max-w-lg overflow-hidden border border-slate-200" role="dialog" aria-labelledby="create-batch-title">
+      <div class="px-6 py-5 border-b border-slate-100">
+        <div id="create-batch-success-banner" class="hidden mb-4 rounded-xl border border-green-100 bg-green-50 px-4 py-3 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-bold text-green-800">Current batch completed successfully.</p>
+            <p class="text-xs text-green-700 mt-0.5">Would you like to create a new batch now?</p>
+          </div>
+        </div>
+        <h3 id="create-batch-title" class="text-lg font-bold text-slate-800">Create New Batch</h3>
+        <p class="text-xs text-slate-500 mt-0.5">The new batch will become the Current Active Batch. Previous records stay in history.</p>
+      </div>
+      <form id="create-batch-form" class="px-6 py-5 space-y-4" onsubmit="submitCreateBatch(event)">
+        <div>
+          <label for="new-batch-name" class="block text-xs font-semibold text-slate-600 mb-1.5">Batch Name</label>
+          <input id="new-batch-name" required type="text" placeholder="e.g., Batch 4 - A" class="w-full text-sm border border-slate-200 rounded-lg focus:ring-abec-blue focus:border-abec-blue"/>
+        </div>
+        <div>
+          <label for="new-batch-year" class="block text-xs font-semibold text-slate-600 mb-1.5">Academic Year</label>
+          <input id="new-batch-year" required type="text" placeholder="e.g., 2027–2028" class="w-full text-sm border border-slate-200 rounded-lg focus:ring-abec-blue focus:border-abec-blue"/>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="new-batch-start" class="block text-xs font-semibold text-slate-600 mb-1.5">Start Date</label>
+            <input id="new-batch-start" required type="date" class="w-full text-sm border border-slate-200 rounded-lg focus:ring-abec-blue focus:border-abec-blue"/>
+          </div>
+          <div>
+            <label for="new-batch-end" class="block text-xs font-semibold text-slate-600 mb-1.5">End Date</label>
+            <input id="new-batch-end" required type="date" class="w-full text-sm border border-slate-200 rounded-lg focus:ring-abec-blue focus:border-abec-blue"/>
+          </div>
+        </div>
+        <div>
+          <label for="new-batch-max" class="block text-xs font-semibold text-slate-600 mb-1.5">Maximum Students</label>
+          <input id="new-batch-max" required type="number" min="1" placeholder="e.g., 150" class="w-full text-sm border border-slate-200 rounded-lg focus:ring-abec-blue focus:border-abec-blue"/>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeCreateBatchModal()" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold rounded-lg bg-abec-navy text-white hover:bg-abec-blue transition-colors shadow-sm">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="../../wwwroot/js/admin-dashboard.js"></script>
+</body></html>

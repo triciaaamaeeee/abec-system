@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Signed Out - ABEC Institute</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+      },
+      colors: {
+        'abec-navy': '#0A2540',
+        'abec-blue': '#1A4B7A'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .signout-card {
+    border: 1px solid #e8edf2;
+    box-shadow: 0 12px 35px rgba(10, 37, 64, 0.08);
+    border-radius: 20px;
+  }
+
+  .signout-btn {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .signout-btn-primary {
+    background: #0A2540;
+    color: white;
+  }
+
+  .signout-btn-primary:hover {
+    background: #12395d;
+    transform: translateY(-1px);
+  }
+
+  .signout-btn-secondary {
+    background: #f5f7f9;
+    color: #0A2540;
+    border: 1px solid #e3e8ed;
+  }
+
+  .signout-btn-secondary:hover {
+    background: #edf1f5;
+    transform: translateY(-1px);
+  }
+
+  .signout-btn-ghost {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e3e8ed;
+  }
+
+  .signout-btn-ghost:hover {
+    background: #f8fafc;
+    color: #0A2540;
+    transform: translateY(-1px);
+  }
+
+  .icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+    background: #f3f6f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+
+<body class="abec-public-surface min-h-screen flex items-center justify-center px-4 py-8">
+
+  <div class="signout-card w-full max-w-sm bg-white px-7 py-8 text-center">
+
+    <!-- Icon -->
+    <div class="icon-box mx-auto mb-5">
+      <svg class="w-6 h-6 text-abec-navy"
+           fill="none"
+           stroke="currentColor"
+           viewBox="0 0 24 24">
+        <path stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.6"
+              d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z">
+        </path>
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-xl font-bold text-abec-navy tracking-tight mb-2">
+      Sign Out
+    </h1>
+
+    <p class="text-sm text-slate-500 leading-relaxed mb-7">
+      Are you sure you want to sign out?
+    </p>
+
+    <!-- Buttons -->
+    <div class="space-y-3">
+
+      <a href="/Home/Login"
+         class="signout-btn signout-btn-primary">
+        <span>Return to Login</span>
+        <svg class="w-4 h-4"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.75"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+          </path>
+        </svg>
+      </a>
+
+      <a href="/Home/Landing"
+         class="signout-btn signout-btn-secondary">
+        <span>Home</span>
+        <svg class="w-4 h-4"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.75"
+                d="M14 5l7 7m0 0l-7 7m7-7H3">
+          </path>
+        </svg>
+      </a>
+
+      <button type="button"
+              onclick="cancelSignOut()"
+              class="signout-btn signout-btn-ghost">
+        <span>Cancel</span>
+        <svg class="w-4 h-4"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.75"
+                d="M6 18L18 6M6 6l12 12">
+          </path>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Session Info -->
+    <div class="mt-7 pt-4 border-t border-slate-100
+                flex items-center justify-center gap-2
+                text-[11px] text-slate-400">
+
+      <svg class="w-3.5 h-3.5 shrink-0"
+           fill="none"
+           stroke="currentColor"
+           viewBox="0 0 24 24">
+        <path stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+        </path>
+      </svg>
+
+      <span>
+        Session terminated:
+        <span id="session-time">—</span>
+      </span>
+    </div>
+
+  </div>
+
+<script>
+(function () {
+  var now = new Date();
+
+  var time = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+
+  document.getElementById('session-time').textContent = time;
+})();
+
+function cancelSignOut() {
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+
+  window.location.href = '../Admin/AdminDashboard.html';
+}
+</script>
+
+</body>
+</html>

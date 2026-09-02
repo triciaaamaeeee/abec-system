@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Applicants - ABEC Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'] },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+  .status-pill {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .status-pill.active {
+    background-color: #0B2747;
+    color:white;
+  }
+  .applicant-card {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .applicant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -8px rgba(0, 26, 51, 0.18);
+  }
+  @keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .applicant-modal-card {
+    animation: modal-pop 0.3s ease;
+  }
+  .slot-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .slot-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px -8px rgba(0, 26, 51, 0.15);
+  }
+  .applicant-card.selected {
+    border-color: #1B4F7A;
+    box-shadow: 0 0 0 2px rgba(0, 51, 102, 0.2);
+  }
+  .select-checkbox {
+    display: none;
+  }
+  body.selection-mode .applicant-card:not(.hidden) .select-checkbox {
+    display: flex;
+  }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+<div class="p-6 flex items-center gap-3">
+<img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+<div>
+<h1 class="abec-brand-title">ABEC</h1>
+<p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+</div>
+</div>
+<nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+<a class="abec-nav-link" href="AdminDashboard.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Dashboard
+</a>
+<a class="abec-nav-link abec-nav-link-active" href="ApplicantPage.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Applicants
+</a>
+<a class="abec-nav-link" href="AccountActivation.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Account Activation
+</a>
+<a class="abec-nav-link" href="CourseManagement.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Course Management
+</a>
+<a class="abec-nav-link" href="DocumentManagement.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Document Management
+</a>
+<a class="abec-nav-link" href="StudentArchive.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Student Archive
+</a>
+</nav>
+<div class="abec-sidebar-footer">
+<div class="abec-profile-chip">
+<div class="w-10 h-10 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-bold shrink-0" aria-hidden="true">AD</div>
+<div class="overflow-hidden">
+<p class="text-xs font-semibold truncate">Admin</p>
+<p class="text-[10px] text-white/45">Administrator</p>
+</div>
+</div>
+<div class="space-y-1">
+<a class="abec-footer-link" href="UserSettings.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  User Settings
+</a>
+<a class="abec-footer-link" href="../Home/SignOutPage.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Sign Out
+</a>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar -->
+
+<main class="abec-main">
+<!-- Page Header -->
+<header class="mb-6 pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+<h2 class="text-3xl font-bold text-abec-blue">Applicants</h2>
+<div class="flex items-center gap-2">
+<span class="text-xs font-medium text-slate-500">Filter by:</span>
+<select id="course-filter" class="text-xs border-slate-200 rounded-md bg-white focus:ring-abec-blue focus:border-abec-blue" onchange="filterApplicants()">
+<option value="all">All Courses</option>
+<option value="Computer System Servicing NC II">Computer System Servicing NC II</option>
+<option value="Bookkeeping NC II">Bookkeeping NC II</option>
+<option value="Electronic Product Assembly and Servicing NC II">Electronic Product Assembly and Servicing NC II</option>
+<option value="Customer Services NC II">Customer Services NC II</option>
+</select>
+</div>
+</header>
+
+<!-- Quick Overview -->
+<section class="mb-8" data-purpose="quick-overview">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Quick Overview</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="slot-card abec-card abec-card-static p-5">
+<p class="text-2xl font-bold text-abec-blue mt-1">25</p>
+<p class="text-xs text-slate-500 mt-2">Computer Servicing NC II</p>
+</div>
+<div class="slot-card abec-card abec-card-static p-5">
+<p class="text-2xl font-bold text-abec-blue mt-1">25</p>
+<p class="text-xs text-slate-500 mt-2">Bookkeeping NC II</p>
+</div>
+<div class="slot-card abec-card abec-card-static p-5">
+<p class="text-2xl font-bold text-abec-blue mt-1">25</p>
+<p class="text-xs text-slate-500 mt-2">Computer System Servicing NC II</p>
+</div>
+<div class="slot-card abec-card abec-card-static p-5">
+<p class="text-2xl font-bold text-abec-blue mt-1">25</p>
+<p class="text-xs text-slate-500 mt-2">Electronic Product Assembly and Servicing NC II</p>
+</div>
+</div>
+</section>
+
+<!-- Search + Status Filters -->
+<section class="mb-6 space-y-4" data-purpose="applicant-filters">
+<div class="relative">
+<svg class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<input id="applicant-search" type="text" placeholder="Search here..." class="w-full bg-white border border-slate-200 rounded-full py-3 pl-11 pr-4 text-sm focus:ring-abec-blue focus:border-abec-blue" oninput="filterApplicants()">
+</div>
+<div class="flex flex-wrap gap-2" id="status-filters">
+<button type="button" class="status-pill active text-xs font-semibold px-4 py-1.5 rounded-full bg-slate-100 text-slate-600" data-status="all" onclick="setStatusFilter(this)">All</button>
+<button type="button" class="status-pill text-xs font-semibold px-4 py-1.5 rounded-full bg-slate-100 text-slate-600" data-status="pending" onclick="setStatusFilter(this)">Pending</button>
+<button type="button" class="status-pill text-xs font-semibold px-4 py-1.5 rounded-full bg-slate-100 text-slate-600" data-status="waitlisted" onclick="setStatusFilter(this)">Waitlisted</button>
+<button type="button" class="status-pill text-xs font-semibold px-4 py-1.5 rounded-full bg-slate-100 text-slate-600" data-status="approved" onclick="setStatusFilter(this)">Approved</button>
+<button type="button" class="status-pill text-xs font-semibold px-4 py-1.5 rounded-full bg-slate-100 text-slate-600" data-status="rejected" onclick="setStatusFilter(this)">Rejected</button>
+</div>
+
+<!-- Multi-select toolbar (hidden on All tab) -->
+<div id="select-toolbar" class="hidden flex flex-wrap items-center justify-between gap-3 pt-1">
+  <div class="flex items-center gap-2">
+    <button id="btn-select-mode" type="button" onclick="toggleSelectionMode()" class="text-xs font-bold text-abec-blue border border-abec-blue px-4 py-2 rounded-md hover:bg-abec-blue hover:text-white transition-colors">
+      Select
+    </button>
+    <button id="btn-cancel-select" type="button" onclick="exitSelectionMode()" class="hidden text-xs font-bold text-slate-500 border border-slate-300 px-4 py-2 rounded-md hover:bg-slate-100 transition-colors">
+      Cancel
+    </button>
+    <span id="selected-count" class="hidden text-xs text-slate-500 font-medium">0 selected</span>
+  </div>
+  <div id="bulk-actions" class="hidden flex flex-wrap items-center gap-2">
+    <button type="button" data-bulk="approve" onclick="bulkUpdateStatus('approved')" class="bulk-action-btn hidden text-xs font-bold bg-abec-navy hover:bg-[#1A4B7A] text-white px-4 py-2 rounded-md transition-colors">Approve Selected</button>
+    <button type="button" data-bulk="waitlist" onclick="bulkUpdateStatus('waitlisted')" class="bulk-action-btn hidden text-xs font-bold bg-abec-navy hover:bg-[#1A4B7A] text-white px-4 py-2 rounded-md transition-colors">Add to Waitlisted</button>
+    <button type="button" data-bulk="add-slot" onclick="bulkAddToSlot()" class="bulk-action-btn hidden text-xs font-bold bg-abec-navy hover:bg-[#1A4B7A] text-white px-4 py-2 rounded-md transition-colors">Add to Slot</button>
+    <button type="button" data-bulk="reject" onclick="bulkUpdateStatus('rejected')" class="bulk-action-btn hidden text-xs font-bold bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors">Reject Selected</button>
+    <button type="button" data-bulk="restore" onclick="bulkUpdateStatus('pending')" class="bulk-action-btn hidden text-xs font-bold bg-abec-navy hover:bg-[#1A4B7A] text-white px-4 py-2 rounded-md transition-colors">Restore to Pending</button>
+  </div>
+</div>
+</section>
+
+<!-- Applicant List -->
+<section class="space-y-3" id="applicant-list" data-purpose="applicant-list">
+<p id="applicants-empty" class="text-center text-sm text-slate-400 py-10">No applicants yet.</p>
+</section>
+
+<p id="no-results" class="hidden text-center text-sm text-slate-400 py-10">No applicants match your filters.</p>
+</main>
+</div>
+
+<!-- Applicant Details Modal -->
+<div id="applicant-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeApplicantModal()"></div>
+  <div class="applicant-modal-card relative bg-white rounded-xl border border-slate-200 shadow-lg max-w-xl w-full overflow-hidden">
+    <!-- Header -->
+    <div class="bg-slate-50 border-b border-slate-200 px-6 py-5 flex items-start justify-between gap-4">
+      <div class="flex items-center gap-4 min-w-0">
+        <div id="modal-avatar" class="w-12 h-12 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold shrink-0">—</div>
+        <div class="min-w-0">
+          <h3 id="modal-name" class="text-lg font-bold text-abec-blue truncate">—</h3>
+          <p id="modal-date" class="text-xs text-slate-500 mt-0.5">Submitted: —</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-2 shrink-0">
+        <span id="modal-status" class="inline-block px-2.5 py-1 rounded text-[10px] font-bold bg-amber-100 text-amber-700 uppercase">Pending</span>
+        <button type="button" aria-label="Close" onclick="closeApplicantModal()" class="text-slate-400 hover:text-slate-700 text-xl leading-none px-1">&times;</button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="px-6 py-6 space-y-5">
+      <div>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Gmail</p>
+        <p class="text-sm text-abec-blue flex items-center gap-2">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span id="modal-email">—</span>
+        </p>
+      </div>
+      <div>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Contact Number</p>
+        <p class="text-sm text-abec-blue flex items-center gap-2">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span id="modal-phone">—</span>
+        </p>
+      </div>
+      <div>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Home Address</p>
+        <p class="text-sm text-abec-blue flex items-start gap-2">
+          <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span id="modal-address">—</span>
+        </p>
+      </div>
+
+      <div class="bg-slate-100 rounded-lg p-4">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Enrollment Course</p>
+        <p class="text-sm font-semibold text-abec-blue flex items-center gap-2">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span id="modal-course">—</span>
+        </p>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs text-slate-500">Document Verification</p>
+          <p id="modal-progress-label" class="text-xs text-slate-500">0% Complete</p>
+        </div>
+        <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+          <div id="modal-progress-bar" class="h-full bg-abec-navy rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div id="modal-actions" class="space-y-3 pt-1">
+        <button type="button" data-action="approve" class="modal-action-btn hidden w-full bg-abec-navy hover:bg-[#1A4B7A] text-white py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Approve Applicant
+        </button>
+        <button type="button" data-action="waitlist" class="modal-action-btn hidden w-full bg-abec-navy hover:bg-[#1A4B7A] text-white py-3 rounded-lg font-semibold text-sm transition-colors">
+          Add to Waitlisted
+        </button>
+        <button type="button" data-action="add-slot" class="modal-action-btn hidden w-full bg-abec-navy hover:bg-[#1A4B7A] text-white py-3 rounded-lg font-semibold text-sm transition-colors">
+          Add to Slot
+        </button>
+        <button type="button" data-action="reject" class="modal-action-btn hidden w-full bg-red-700 hover:bg-red-800 text-white py-3 rounded-lg font-semibold text-sm transition-colors">
+          Reject Applicant
+        </button>
+        <button type="button" data-action="restore" onclick="restoreToPending()" class="modal-action-btn hidden w-full bg-abec-navy hover:bg-[#1A4B7A] text-white py-3 rounded-lg font-semibold text-sm transition-colors">
+          Restore to Pending
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var activeStatus = 'all';
+  var selectionMode = false;
+  var activeModalCard = null;
+
+  var statusStyles = {
+    pending: 'bg-amber-100 text-amber-700',
+    approved: 'bg-green-100 text-green-700',
+    rejected: 'bg-red-100 text-red-700',
+    waitlisted: 'bg-slate-200 text-slate-600'
+  };
+
+  var avatarStyles = {
+    amber: 'bg-amber-100 text-amber-700',
+    green: 'bg-green-100 text-green-700',
+    red: 'bg-red-100 text-red-700',
+    slate: 'bg-slate-200 text-slate-600'
+  };
+
+  // Select is available on Pending / Approved / Waitlisted / Rejected (not All)
+  var selectableStatuses = ['pending', 'approved', 'waitlisted', 'rejected'];
+
+  // Bulk buttons mirror the Applicant Details modal actions per status
+  var bulkActionsByStatus = {
+    pending: ['approve', 'waitlist', 'reject'],
+    waitlisted: ['approve', 'reject'],
+    approved: ['reject', 'add-slot'],
+    rejected: ['restore']
+  };
+
+  function setStatusFilter(btn) {
+    document.querySelectorAll('.status-pill').forEach(function (el) {
+      el.classList.remove('active');
+    });
+    btn.classList.add('active');
+    activeStatus = btn.getAttribute('data-status');
+    if (selectionMode && selectableStatuses.indexOf(activeStatus) === -1) {
+      exitSelectionMode();
+    } else if (selectionMode) {
+      clearSelections();
+      updateBulkActionButtons();
+    }
+    filterApplicants();
+    updateSelectToolbarVisibility();
+  }
+
+  function filterApplicants() {
+    var query = document.getElementById('applicant-search').value.trim().toLowerCase();
+    var course = document.getElementById('course-filter').value;
+    var cards = document.querySelectorAll('#applicant-list .applicant-card');
+    var emptyEl = document.getElementById('applicants-empty');
+    var noResults = document.getElementById('no-results');
+    var visible = 0;
+
+    cards.forEach(function (card) {
+      var name = card.getAttribute('data-name') || '';
+      var cardCourse = card.getAttribute('data-course') || '';
+      var status = card.getAttribute('data-status') || '';
+      var matchName = !query || name.indexOf(query) !== -1;
+      var matchCourse = course === 'all' || cardCourse === course;
+      var matchStatus = activeStatus === 'all' || status === activeStatus;
+      var show = matchName && matchCourse && matchStatus;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    if (emptyEl) emptyEl.classList.toggle('hidden', cards.length > 0);
+    if (noResults) noResults.classList.toggle('hidden', cards.length === 0 || visible > 0);
+    updateSelectedCount();
+  }
+
+  function updateSelectToolbarVisibility() {
+    var showSelect = selectableStatuses.indexOf(activeStatus) !== -1;
+    document.getElementById('select-toolbar').classList.toggle('hidden', !showSelect && !selectionMode);
+    if (showSelect && selectionMode) updateBulkActionButtons();
+  }
+
+  function updateBulkActionButtons() {
+    var visible = bulkActionsByStatus[activeStatus] || [];
+    document.querySelectorAll('.bulk-action-btn').forEach(function (btn) {
+      var action = btn.getAttribute('data-bulk');
+      btn.classList.toggle('hidden', visible.indexOf(action) === -1);
+    });
+    var rejectBtn = document.querySelector('.bulk-action-btn[data-bulk="reject"]');
+    if (rejectBtn) {
+      rejectBtn.textContent = activeStatus === 'pending' ? 'Reject Selected' : 'Reject Selected';
+    }
+  }
+
+  function toggleSelectionMode() {
+    if (selectionMode) {
+      exitSelectionMode();
+      return;
+    }
+    if (selectableStatuses.indexOf(activeStatus) === -1) return;
+
+    selectionMode = true;
+    document.body.classList.add('selection-mode');
+    document.getElementById('btn-select-mode').classList.add('hidden');
+    document.getElementById('btn-cancel-select').classList.remove('hidden');
+    document.getElementById('selected-count').classList.remove('hidden');
+    document.getElementById('bulk-actions').classList.remove('hidden');
+    updateBulkActionButtons();
+    updateSelectedCount();
+  }
+
+  function clearSelections() {
+    document.querySelectorAll('.applicant-card').forEach(function (card) {
+      card.classList.remove('selected');
+      var check = card.querySelector('.applicant-check');
+      if (check) check.checked = false;
+    });
+  }
+
+  function exitSelectionMode() {
+    selectionMode = false;
+    document.body.classList.remove('selection-mode');
+    document.getElementById('btn-select-mode').classList.remove('hidden');
+    document.getElementById('btn-cancel-select').classList.add('hidden');
+    document.getElementById('selected-count').classList.add('hidden');
+    document.getElementById('bulk-actions').classList.add('hidden');
+    clearSelections();
+    filterApplicants();
+    updateSelectToolbarVisibility();
+  }
+
+  function handleCardClick(card, event) {
+    if (selectionMode) {
+      if (card.classList.contains('hidden')) return;
+      if (card.getAttribute('data-status') !== activeStatus) return;
+      var check = card.querySelector('.applicant-check');
+      if (!check) return;
+      check.checked = !check.checked;
+      toggleCardSelection(check);
+      return;
+    }
+    openApplicantModal(card);
+  }
+
+  function toggleCardSelection(checkbox) {
+    var card = checkbox.closest('.applicant-card');
+    if (!card) return;
+    card.classList.toggle('selected', checkbox.checked);
+    updateSelectedCount();
+  }
+
+  function updateSelectedCount() {
+    var count = document.querySelectorAll('.applicant-card.selected:not(.hidden)').length;
+    document.getElementById('selected-count').textContent = count + ' selected';
+  }
+
+  function getSelectedCards() {
+    return Array.prototype.slice.call(
+      document.querySelectorAll('.applicant-card.selected:not(.hidden)')
+    );
+  }
+
+  function bulkUpdateStatus(newStatus) {
+    var selected = getSelectedCards();
+    if (!selected.length) {
+      alert('Please select at least one applicant.');
+      return;
+    }
+    selected.forEach(function (card) {
+      applyStatusToCard(card, newStatus);
+    });
+    exitSelectionMode();
+  }
+
+  function bulkAddToSlot() {
+    var selected = getSelectedCards();
+    if (!selected.length) {
+      alert('Please select at least one applicant.');
+      return;
+    }
+    // Slot assignment keeps Approved status; selection clears after action
+    exitSelectionMode();
+  }
+
+  function applyStatusToCard(card, newStatus) {
+    card.setAttribute('data-status', newStatus);
+    var badge = card.querySelector('span.uppercase');
+    if (badge) {
+      badge.textContent = newStatus;
+      badge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ' + (statusStyles[newStatus] || statusStyles.pending);
+    }
+    // Keep avatar color roughly aligned for pending/rejected feedback
+    if (newStatus === 'pending') card.setAttribute('data-avatar', 'amber');
+    if (newStatus === 'approved') card.setAttribute('data-avatar', 'green');
+    if (newStatus === 'rejected') card.setAttribute('data-avatar', 'red');
+    if (newStatus === 'waitlisted') card.setAttribute('data-avatar', 'slate');
+  }
+
+  function openApplicantModal(card) {
+    activeModalCard = card;
+    var status = card.getAttribute('data-status');
+    var avatar = card.getAttribute('data-avatar');
+    var progress = card.getAttribute('data-progress') || '0';
+
+    document.getElementById('modal-name').textContent = card.getAttribute('data-display-name');
+    document.getElementById('modal-date').textContent = 'Submitted: ' + card.getAttribute('data-date');
+    document.getElementById('modal-email').textContent = card.getAttribute('data-email');
+    document.getElementById('modal-phone').textContent = card.getAttribute('data-phone');
+    document.getElementById('modal-address').textContent = card.getAttribute('data-address');
+    document.getElementById('modal-course').textContent = card.getAttribute('data-course');
+    document.getElementById('modal-progress-label').textContent = progress + '% Complete';
+    document.getElementById('modal-progress-bar').style.width = progress + '%';
+
+    var avatarEl = document.getElementById('modal-avatar');
+    avatarEl.textContent = card.getAttribute('data-initials');
+    avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ' + (avatarStyles[avatar] || avatarStyles.amber);
+
+    var statusEl = document.getElementById('modal-status');
+    statusEl.textContent = status;
+    statusEl.className = 'inline-block px-2.5 py-1 rounded text-[10px] font-bold uppercase ' + (statusStyles[status] || statusStyles.pending);
+
+    updateModalActions(status);
+
+    document.getElementById('applicant-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateModalActions(status) {
+    var actions = {
+      pending: ['approve', 'waitlist', 'reject'],
+      waitlisted: ['approve', 'reject'],
+      approved: ['reject', 'add-slot'],
+      rejected: ['restore']
+    };
+    var visible = actions[status] || [];
+    var rejectBtn = document.querySelector('.modal-action-btn[data-action="reject"]');
+
+    document.querySelectorAll('.modal-action-btn').forEach(function (btn) {
+      var action = btn.getAttribute('data-action');
+      btn.classList.toggle('hidden', visible.indexOf(action) === -1);
+    });
+
+    if (rejectBtn) {
+      rejectBtn.textContent = status === 'pending' ? 'Reject Applicant' : 'Reject';
+    }
+
+    document.getElementById('modal-actions').classList.toggle('hidden', visible.length === 0);
+  }
+
+  function restoreToPending() {
+    if (!activeModalCard) return;
+    applyStatusToCard(activeModalCard, 'pending');
+    closeApplicantModal();
+    filterApplicants();
+    updateSelectToolbarVisibility();
+  }
+
+  function closeApplicantModal() {
+    document.getElementById('applicant-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+    activeModalCard = null;
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (!document.getElementById('applicant-modal').classList.contains('hidden')) {
+        closeApplicantModal();
+      } else if (selectionMode) {
+        exitSelectionMode();
+      }
+    }
+  });
+
+  updateSelectToolbarVisibility();
+  filterApplicants();
+</script>
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ABEC Training Portal - Student Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Plus Jakarta Sans', Inter, sans-serif; letter-spacing: 0; }
+  h1,h2,h3,h4 { letter-spacing: -0.02em; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+  <div class="p-6 flex items-center gap-3">
+    <img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    <div>
+      <h1 class="abec-brand-title">ABEC</h1>
+      <p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+    </div>
+  </div>
+  <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <a class="abec-nav-link abec-nav-link-active" href="StudentDashboard.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Dashboard
+    </a>
+    <a class="abec-nav-link" href="ClassSchedule.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Class Schedules
+    </a>
+    <a class="abec-nav-link" href="DocumentRequest.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Document Requests
+    </a>
+    <a class="abec-nav-link" href="Notifications.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Notifications
+    </a>
+  </nav>
+  <div class="abec-sidebar-footer">
+    <div class="abec-profile-chip">
+      <div class="w-10 h-10 rounded-full bg-white/15 text-white text-[11px] font-bold flex items-center justify-center shrink-0">ST</div>
+      <div class="overflow-hidden">
+        <p class="text-xs font-semibold truncate">Student</p>
+        <p class="text-[10px] text-white/45">Student</p>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <a class="abec-footer-link" href="UserSettings.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        User Settings
+      </a>
+      <a class="abec-footer-link" href="../Home/SignOutPage.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Sign Out
+      </a>
+    </div>
+  </div>
+</aside>
+<!-- ========== SIDEBAR (END) ========== -->
+
+<main class="abec-main min-h-screen">
+  <header class="mb-8">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+      <div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-3">Welcome back</h2>
+        <div class="flex flex-wrap gap-2 items-center">
+          <span class="bg-slate-100 px-3 py-1 rounded-full text-[10px] font-bold text-slate-600 uppercase tracking-wide">Gmail: —</span>
+          <span class="bg-amber-100 px-3 py-1 rounded-full text-[10px] font-bold text-amber-800 uppercase tracking-wide">Batch: —</span>
+          <span class="inline-flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1 rounded-full text-[10px] font-bold text-slate-700 uppercase tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+            Not enrolled
+          </span>
+          <span class="text-sm text-slate-500 ml-1">—</span>
+        </div>
+      </div>
+      <p class="hidden md:block text-xs font-medium text-slate-400">Dashboard Overview</p>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-12 gap-6">
+    <!-- Course Progress -->
+    <section class="col-span-12">
+      <div class="bg-abec-navy rounded-xl p-6 shadow-sm text-white transition-all duration-300 hover:shadow-md">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-1">Not enrolled</h3>
+            <p class="text-[10px] uppercase tracking-widest text-slate-300 font-bold">Course Code: —</p>
+          </div>
+          <svg class="w-10 h-10 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div>
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Training Qualification</p>
+            <p class="text-sm font-medium">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Instructor</p>
+            <p class="text-sm font-medium">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Venue / Room</p>
+            <p class="text-sm font-medium">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Batch Period</p>
+            <p class="text-sm font-medium">—</p>
+          </div>
+        </div>
+        <div class="bg-white/10 rounded-lg p-4 border border-white/10">
+          <div class="flex justify-between items-center mb-2">
+            <p class="text-sm font-medium">Training Completion</p>
+            <p class="text-3xl font-bold">0%</p>
+          </div>
+          <div class="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+            <div class="h-full bg-amber-300 rounded-full transition-all duration-500" style="width: 0%;"></div>
+          </div>
+          <p class="text-xs text-slate-300 mt-2 italic">No estimated completion date</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upcoming Classes -->
+    <section class="col-span-12 lg:col-span-8">
+      <div class="abec-card abec-card-static overflow-hidden h-full flex flex-col">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100">
+          <h3 class="text-lg font-bold text-slate-800">Upcoming Classes</h3>
+          <a href="ClassSchedule.html" class="text-xs font-bold text-abec-blue hover:underline transition-colors">View Full Schedule</a>
+        </div>
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left min-w-[640px]">
+            <thead class="bg-slate-50/80 border-b border-slate-100">
+              <tr class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                <th class="px-6 py-3.5">Day / Time</th>
+                <th class="px-6 py-3.5">Subject / Module</th>
+                <th class="px-6 py-3.5">Instructor</th>
+                <th class="px-6 py-3.5">Room</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+              <tr>
+                <td colspan="4" class="px-6 py-10 text-center text-sm text-slate-500">No upcoming classes scheduled.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendar -->
+    <section class="col-span-12 lg:col-span-4">
+      <div class="abec-card abec-card-static p-5 h-full">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold text-slate-800">Calendar</h3>
+          <div class="flex gap-1">
+            <button type="button" class="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-abec-blue transition-colors" aria-label="Previous month">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+            <button type="button" class="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-abec-blue transition-colors" aria-label="Next month">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-7 text-center mb-3">
+          <div class="text-[10px] font-bold text-slate-400 py-1">S</div>
+          <div class="text-[10px] font-bold text-slate-400 py-1">M</div>
+          <div class="text-[10px] font-bold text-slate-400 py-1">T</div>
+          <div class="text-[10px] font-bold text-slate-400 py-1">W</div>
+          <div class="text-[10px] font-bold text-slate-400 py-1">T</div>
+          <div class="text-[10px] font-bold text-slate-400 py-1">F</div>
+          <div class="text-[10px] font-bold text-slate-400 py-1">S</div>
+        </div>
+        <div class="grid grid-cols-7 gap-y-2 text-center text-sm">
+          <div class="text-slate-300 py-1.5">28</div>
+          <div class="text-slate-300 py-1.5">29</div>
+          <div class="text-slate-300 py-1.5">30</div>
+          <div class="py-1.5 text-slate-700">1</div>
+          <div class="py-1.5 text-slate-700">2</div>
+          <div class="py-1.5 text-slate-700">3</div>
+          <div class="py-1.5 text-slate-700">4</div>
+          <div class="py-1.5 text-slate-700">5</div>
+          <div class="py-1.5 text-slate-700">6</div>
+          <div class="py-1.5 text-slate-700">7</div>
+          <div class="py-1.5 text-slate-700">8</div>
+          <div class="py-1.5 text-slate-700">9</div>
+          <div class="py-1.5 text-slate-700">10</div>
+          <div class="py-1.5 text-slate-700">11</div>
+          <div class="py-1.5 text-slate-700">12</div>
+          <div class="py-1.5 text-slate-700">13</div>
+          <div class="py-1.5 text-slate-700">14</div>
+          <div class="py-1.5 text-slate-700">15</div>
+          <div class="py-1.5 text-slate-700">16</div>
+          <div class="py-1.5 text-slate-700">17</div>
+          <div class="py-1.5 text-slate-700">18</div>
+          <div class="py-1.5 text-slate-700">19</div>
+          <div class="py-1.5 text-slate-700">20</div>
+          <div class="py-1.5 text-slate-700">21</div>
+          <div class="py-1.5 text-slate-700">22</div>
+          <div class="py-1.5 text-slate-700">23</div>
+          <div class="py-1.5 text-slate-700">24</div>
+          <div class="py-1.5 text-slate-700">25</div>
+          <div class="py-1.5 text-slate-700">26</div>
+          <div class="py-1.5 text-slate-700">27</div>
+          <div class="py-1.5 text-slate-700">28</div>
+          <div class="py-1.5 text-slate-700">29</div>
+          <div class="py-1.5 text-slate-700">30</div>
+          <div class="py-1.5 text-slate-700">31</div>
+          <div class="text-slate-300 py-1.5">1</div>
+        </div>
+        <div class="mt-6 space-y-2 border-t border-slate-100 pt-4">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-abec-navy rounded-sm"></div>
+            <span class="text-xs text-slate-500">Today</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-amber-100 border border-amber-400 rounded-sm"></div>
+            <span class="text-xs text-slate-500">Scheduled Class</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Document Requests -->
+    <section class="col-span-12 lg:col-span-6">
+      <div class="abec-card abec-card-static h-full flex flex-col">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100">
+          <h3 class="text-lg font-bold text-slate-800">Recent Document Requests</h3>
+          <button type="button" class="bg-abec-navy hover:bg-[#1A4B7A] text-white text-xs font-bold px-4 py-2 rounded-md flex items-center gap-2 transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            Request
+          </button>
+        </div>
+        <div class="p-5 flex-1 flex items-center justify-center">
+          <p class="text-sm text-slate-500 text-center">No document requests yet.</p>
+        </div>
+        <div class="px-6 py-3 text-center border-t border-slate-100 bg-slate-50/50">
+          <button type="button" class="text-xs font-bold text-abec-blue hover:underline transition-colors">View History</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section class="col-span-12 lg:col-span-6">
+      <div class="abec-card abec-card-static h-full flex flex-col">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100">
+          <h3 class="text-lg font-bold text-slate-800">Recent Notifications</h3>
+          <button type="button" class="text-xs font-medium text-slate-500 hover:text-abec-blue transition-[color]">Mark all as read</button>
+        </div>
+        <div class="flex-1 flex items-center justify-center p-5">
+          <p class="text-sm text-slate-500 text-center">No notifications yet.</p>
+        </div>
+        <div class="px-6 py-3 text-center border-t border-slate-100 bg-slate-50/50">
+          <a href="Notifications.html" class="text-xs font-bold text-abec-blue hover:underline">See All Activity</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="mt-10 bg-white rounded-xl border border-slate-200 p-6">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+      <p class="text-xs text-slate-500">© 2024 ABEC Training and Assessment Center. All Rights Reserved.</p>
+      <div class="flex gap-4">
+        <a class="text-xs text-slate-500 hover:text-abec-blue transition-colors" href="#">Privacy Policy</a>
+        <a class="text-xs text-slate-500 hover:text-abec-blue transition-colors" href="#">Terms of Service</a>
+        <a class="text-xs text-slate-500 hover:text-abec-blue transition-colors" href="#">Support</a>
+      </div>
+    </div>
+  </footer>
+</main>
+</div>
+
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+</body>
+</html>

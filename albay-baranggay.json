@@ -1,0 +1,22 @@
+[
+  {
+    "cityMunicipalityCode": "0500501000",
+    "cityMunicipalityName": "Bacacay",
+    "barangays": [
+      {
+        "code": "0500501001",
+        "name": "Baclayon"
+      }
+    ]
+  },
+  {
+    "cityMunicipalityCode": "0500502000",
+    "cityMunicipalityName": "Camalig",
+    "barangays": [
+      {
+        "code": "0500502001",
+        "name": "Anoling"
+      }
+    ]
+  }
+]

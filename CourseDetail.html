@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Redirecting…</title>
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var course = params.get('course') || 'bookkeeping';
+    window.location.replace('CourseManagement.html?view=detail&course=' + encodeURIComponent(course));
+  })();
+</script>
+</head>
+<body>
+  <p>This page has moved. <a id="link" href="CourseManagement.html">Go to Course Management</a>.</p>
+  <script>
+    document.getElementById('link').href = 'CourseManagement.html?view=detail&course=' +
+      encodeURIComponent(new URLSearchParams(window.location.search).get('course') || 'bookkeeping');
+  </script>
+</body>
+</html>

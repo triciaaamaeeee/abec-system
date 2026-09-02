@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Settings - ABEC Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'] },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800" data-abec-shell="secondary" data-abec-back="AdminDashboard.html" data-abec-back-label="Back to Dashboard">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+  <div class="p-6 flex items-center gap-3">
+    <img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    <div>
+      <h1 class="abec-brand-title">ABEC</h1>
+      <p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+    </div>
+  </div>
+  <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <a class="abec-nav-link" href="AdminDashboard.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Dashboard
+    </a>
+    <a class="abec-nav-link" href="ApplicantPage.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Applicants
+    </a>
+    <a class="abec-nav-link" href="AccountActivation.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Account Activation
+    </a>
+    <a class="abec-nav-link" href="CourseManagement.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Course Management
+    </a>
+    <a class="abec-nav-link" href="DocumentManagement.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Document Management
+    </a>
+    <a class="abec-nav-link" href="StudentArchive.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Student Archive
+    </a>
+  </nav>
+  <div class="abec-sidebar-footer">
+    <div class="abec-profile-chip">
+      <div class="w-10 h-10 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-bold shrink-0" aria-hidden="true">AD</div>
+      <div class="overflow-hidden">
+        <p class="text-xs font-semibold truncate">Admin</p>
+        <p class="text-[10px] text-white/45">Administrator</p>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <a class="abec-footer-link abec-footer-link-active" href="UserSettings.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        User Settings
+      </a>
+      <a class="abec-footer-link" href="../Home/SignOutPage.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Sign Out
+      </a>
+    </div>
+  </div>
+</aside>
+
+<!-- SIDEBAR (END)  -->
+
+<main class="abec-main min-h-screen">
+  <a href="AdminDashboard.html" data-abec-back-btn="true" class="abec-back-btn">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7"></path></svg>
+  </a>
+  <h2 class="text-2xl md:text-3xl font-bold text-abec-blue mb-6 tracking-tight">User Settings</h2>
+
+  <!-- Profile Header -->
+  <section class="abec-card abec-card-static p-6 mb-6 flex flex-col md:flex-row md:items-center gap-6">
+    <div class="relative shrink-0">
+      <div class="w-24 h-24 rounded-xl bg-abec-navy text-white flex items-center justify-center text-2xl font-bold border border-slate-200" aria-hidden="true">AD</div>
+      <span class="absolute -bottom-1.5 -right-1.5 bg-abec-navy text-white rounded-full p-1.5 border-2 border-white">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      </span>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-3 flex-wrap">
+        <h3 class="text-2xl font-bold text-abec-blue">Admin</h3>
+        <span class="bg-amber-400 text-abec-navy text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">Administrator</span>
+      </div>
+      <p class="text-sm text-slate-500 mt-1">ABEC Institute of Business and Technology Inc</p>
+      <div class="flex items-center gap-4 flex-wrap mt-2 text-xs text-slate-500">
+        <span class="flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          —
+        </span>
+      </div>
+    </div>
+    <div>
+      <button type="button" class="text-xs font-bold text-abec-blue border border-abec-blue px-4 py-2 rounded-lg hover:bg-abec-blue hover:text-white transition-colors">Edit Profile</button>
+    </div>
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Personal Information -->
+      <section class="abec-card abec-card-static p-6">
+        <h4 class="flex items-center gap-2 text-base font-bold text-slate-800 pb-4 border-b border-slate-100 mb-6">
+          <svg class="w-5 h-5 text-abec-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Personal Information
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2" for="settings-name">Full Name</label>
+            <input class="w-full bg-slate-50 border-slate-200 rounded-lg py-2.5 px-3 text-sm focus:ring-abec-blue focus:border-abec-blue" id="settings-name" type="text" value="" placeholder="Full name">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2" for="settings-contact">Contact Number</label>
+            <input class="w-full bg-slate-50 border-slate-200 rounded-lg py-2.5 px-3 text-sm focus:ring-abec-blue focus:border-abec-blue" id="settings-contact" type="tel" value="" placeholder="Contact number">
+          </div>
+          <div class="md:col-span-2 md:w-1/2 md:pr-3">
+            <label class="block text-xs font-bold text-slate-700 mb-2" for="settings-email">Email Address</label>
+            <input class="w-full bg-slate-50 border-slate-200 rounded-lg py-2.5 px-3 text-sm focus:ring-abec-blue focus:border-abec-blue" id="settings-email" type="email" value="" placeholder="Email address">
+          </div>
+        </div>
+        <div class="flex justify-end mt-6">
+          <button type="button" class="abec-btn abec-btn-primary">Save Changes</button>
+        </div>
+      </section>
+
+      <!-- Security & Credentials -->
+      <section class="abec-card abec-card-static p-6">
+        <h4 class="flex items-center gap-2 text-base font-bold text-slate-800 pb-4 border-b border-slate-100 mb-6">
+          <svg class="w-5 h-5 text-abec-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Security &amp; Credentials
+        </h4>
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <p class="text-sm font-bold text-slate-800">Password Management</p>
+            <p class="text-xs text-slate-500 mt-1">We recommend changing your password every 90 days.</p>
+          </div>
+          <button type="button" class="shrink-0 text-xs font-bold text-abec-blue border border-abec-blue px-4 py-2 rounded-lg hover:bg-abec-blue hover:text-white transition-colors">Change Password</button>
+        </div>
+        <p class="text-xs font-bold text-slate-700 mb-3">Recent Login Activity</p>
+        <div class="border border-slate-200 rounded-lg overflow-hidden">
+          <table class="w-full text-left">
+            <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
+              <tr>
+                <th class="px-4 py-3">Device / Location</th>
+                <th class="px-4 py-3">IP Address</th>
+                <th class="px-4 py-3 text-center">Time</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs text-slate-600">
+              <tr>
+                <td colspan="3" class="px-4 py-8 text-center text-sm text-slate-500">No recent login activity.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Notifications -->
+    <section class="abec-card abec-card-static p-6">
+      <h4 class="flex items-center gap-2 text-base font-bold text-slate-800 pb-4 border-b border-slate-100 mb-6">
+        <svg class="w-5 h-5 text-abec-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Notifications
+      </h4>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Channels</p>
+      <div class="space-y-3 mb-6">
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="text-sm text-slate-700">Email Notifications</span>
+          <input checked class="w-4 h-4 rounded border-slate-300 text-abec-navy focus:ring-abec-blue" type="checkbox">
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="text-sm text-slate-700">In-App Alerts</span>
+          <input checked class="w-4 h-4 rounded border-slate-300 text-abec-navy focus:ring-abec-blue" type="checkbox">
+        </label>
+      </div>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Alert Types</p>
+      <div class="space-y-4">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input checked class="mt-0.5 w-4 h-4 rounded border-slate-300 text-abec-navy focus:ring-abec-blue" type="checkbox">
+          <span>
+            <span class="block text-sm font-bold text-slate-800">System Alerts</span>
+            <span class="block text-xs text-slate-500 mt-0.5">Critical platform updates and maintenance.</span>
+          </span>
+        </label>
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input checked class="mt-0.5 w-4 h-4 rounded border-slate-300 text-abec-navy focus:ring-abec-blue" type="checkbox">
+          <span>
+            <span class="block text-sm font-bold text-slate-800">Student Updates</span>
+            <span class="block text-xs text-slate-500 mt-0.5">New enrollments and assessment completions.</span>
+          </span>
+        </label>
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input class="mt-0.5 w-4 h-4 rounded border-slate-300 text-abec-navy focus:ring-abec-blue" type="checkbox">
+          <span>
+            <span class="block text-sm font-bold text-slate-800">Document Requests</span>
+            <span class="block text-xs text-slate-500 mt-0.5">Pending document approvals from staff.</span>
+          </span>
+        </label>
+      </div>
+    </section>
+  </div>
+</main>
+</div>
+
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+</body>
+</html>

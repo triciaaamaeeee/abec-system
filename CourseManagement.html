@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Course Management - ABEC Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'] },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+
+<!-- ========== SHARED + VIEW STYLES (BEGIN) ========== -->
+<style>
+  /* --- Shared --- */
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+
+  /* --- Course Overview (cards) --- */
+  .course-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -12px rgba(0, 26, 51, 0.18);
+  }
+  #course-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(220px, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 1024px) {
+    #course-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      grid-auto-rows: unset;
+      gap: 1.25rem;
+    }
+  }
+
+  .saved-schedule-card { transition: box-shadow 0.2s ease; }
+  .saved-schedule-card:hover { box-shadow: 0 8px 20px -10px rgba(0, 26, 51, 0.15); }
+  .cal-day {
+    min-height: 0;
+    height: 100%;
+  }
+  .cal-day.other-month { background-color: #fafafa; }
+  .cal-day.today { box-shadow: inset 0 0 0 2px #0B2747; }
+  #cal-grid {
+    grid-auto-rows: 1fr;
+    height: 100%;
+  }
+  /* Shared fixed height so Calendar matches Saved Schedules */
+  .equal-panel {
+    height: 440px;
+  }
+  @media (min-width: 1280px) {
+    .equal-panel {
+      height: 480px;
+    }
+  }
+  .day-btn.selected { background-color: #0B2747; color: #fff; border-color: #0B2747; }
+  .day-btn-sq {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.375rem;
+    border: 1px solid #cbd5e1;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #334155;
+    background: #fff;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .day-btn-sq.selected {
+    background-color: #0B2747;
+    color: #fff;
+    border-color: #0B2747;
+  }
+  .schedule-row { cursor: pointer; }
+  .schedule-row:hover { background-color: rgba(248, 250, 252, 0.9); }
+  @keyframes modal-pop {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .schedule-modal-card { animation: modal-pop 0.25s ease; }
+</style>
+<!-- ========== SHARED + VIEW STYLES (END) ========== -->
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+<div class="p-6 flex items-center gap-3">
+<img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+<div>
+<h1 class="abec-brand-title">ABEC</h1>
+<p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+</div>
+</div>
+<nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+<a class="abec-nav-link" href="AdminDashboard.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Dashboard
+</a>
+<a class="abec-nav-link" href="ApplicantPage.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Applicants
+</a>
+<a class="abec-nav-link" href="AccountActivation.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Account Activation
+</a>
+<a class="abec-nav-link abec-nav-link-active" href="CourseManagement.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Course Management
+</a>
+<a class="abec-nav-link" href="DocumentManagement.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Document Management
+</a>
+<a class="abec-nav-link" href="StudentArchive.html">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Student Archive
+</a>
+</nav>
+<div class="abec-sidebar-footer">
+<div class="abec-profile-chip">
+<div class="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center shrink-0" aria-hidden="true">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-semibold truncate">Admin</p>
+<p class="text-[10px] text-white/45">Administrator</p>
+</div>
+</div>
+<div class="space-y-1">
+<a class="abec-footer-link" href="UserSettings.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  User Settings
+</a>
+<a class="abec-footer-link" href="../Home/SignOutPage.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  Sign Out
+</a>
+</div>
+</div>
+</aside>
+<!-- ========== SIDEBAR (END) ========== -->
+
+<main id="main-shell" class="abec-main h-screen overflow-hidden flex flex-col">
+
+<!-- ========== VIEW: COURSE OVERVIEW (BEGIN) ========== -->
+<div id="view-overview" class="flex flex-col flex-1 min-h-0">
+<div class="flex flex-col flex-1 min-h-0 gap-4">
+    <!-- Title + controls on one band -->
+    <div class="shrink-0 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 pb-3 border-b border-slate-200">
+      <h2 class="text-2xl font-bold text-abec-blue shrink-0">Course Management</h2>
+      <div class="flex flex-wrap items-end gap-3">
+        <div>
+          <label for="academic-year" class="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1">Academic Year</label>
+          <input id="academic-year" type="text" value="2025-2026" class="w-40 abec-card abec-card-static py-2 px-3 text-sm font-medium text-slate-800 focus:ring-abec-blue focus:border-abec-blue">
+        </div>
+        <div class="flex items-center gap-2 pb-0.5">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span class="text-xs font-medium text-slate-500">Filter by:</span>
+          <select id="course-filter" class="text-xs border-slate-200 rounded-md focus:ring-abec-blue" onchange="filterCourses()">
+            <option value="all">All Courses</option>
+            <option value="full">Full</option>
+            <option value="available">Available</option>
+          </select>
+        </div>
+        <a href="#" onclick="showView('schedule'); return false;" class="inline-flex items-center justify-center bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold px-5 py-2 rounded-lg transition-colors shadow-sm">
+          Course Schedule Management
+        </a>
+      </div>
+    </div>
+
+    <!-- Course cards: fill remaining viewport as even 2×2 -->
+    <section id="course-grid">
+      <!-- Bookkeeping -->
+      <article class="course-card h-full min-h-0 abec-card abec-card-static p-5 lg:p-6 cursor-pointer flex flex-col justify-between" data-status="available" data-course="bookkeeping" onclick="openCourse('bookkeeping')">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-lg bg-blue-50 text-abec-blue flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </div>
+            <h3 class="text-base lg:text-lg font-bold text-abec-blue leading-snug">Bookkeeping NC II</h3>
+          </div>
+          <span class="shrink-0 text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-emerald-100 text-emerald-700">Available</span>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1.5">
+            <span class="text-slate-500">Enrollment Progress</span>
+            <span class="font-bold text-emerald-600">0% Occupied</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500 rounded-full" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center border-t border-slate-100 pt-4">
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Filled Slots</p><p class="text-2xl font-bold text-slate-800">0</p></div>
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Total Slots</p><p class="text-2xl font-bold text-slate-800">25</p></div>
+          <div class="bg-emerald-50 rounded-lg py-2"><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Available</p><p class="text-2xl font-bold text-emerald-600">25</p></div>
+        </div>
+      </article>
+
+      <!-- CSS -->
+      <article class="course-card h-full min-h-0 abec-card abec-card-static p-5 lg:p-6 cursor-pointer flex flex-col justify-between" data-status="available" data-course="css" onclick="openCourse('css')">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </div>
+            <h3 class="text-base lg:text-lg font-bold text-abec-blue leading-snug">Computer System Servicing NC II</h3>
+          </div>
+          <span class="shrink-0 text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-emerald-100 text-emerald-700">Available</span>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1.5">
+            <span class="text-slate-500">Enrollment Progress</span>
+            <span class="font-bold text-emerald-600">0% Occupied</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500 rounded-full" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center border-t border-slate-100 pt-4">
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Filled Slots</p><p class="text-2xl font-bold text-slate-800">0</p></div>
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Total Slots</p><p class="text-2xl font-bold text-slate-800">25</p></div>
+          <div class="bg-emerald-50 rounded-lg py-2"><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Available</p><p class="text-2xl font-bold text-emerald-600">25</p></div>
+        </div>
+      </article>
+
+      <!-- Customer Services -->
+      <article class="course-card h-full min-h-0 abec-card abec-card-static p-5 lg:p-6 cursor-pointer flex flex-col justify-between" data-status="available" data-course="customer" onclick="openCourse('customer')">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </div>
+            <h3 class="text-base lg:text-lg font-bold text-abec-blue leading-snug">Customer Services NC II</h3>
+          </div>
+          <span class="shrink-0 text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-emerald-100 text-emerald-700">Available</span>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1.5">
+            <span class="text-slate-500">Enrollment Progress</span>
+            <span class="font-bold text-emerald-600">0% Occupied</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500 rounded-full" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center border-t border-slate-100 pt-4">
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Filled Slots</p><p class="text-2xl font-bold text-slate-800">0</p></div>
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Total Slots</p><p class="text-2xl font-bold text-slate-800">25</p></div>
+          <div class="bg-emerald-50 rounded-lg py-2"><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Available</p><p class="text-2xl font-bold text-emerald-600">25</p></div>
+        </div>
+      </article>
+
+      <!-- EPAS -->
+      <article class="course-card h-full min-h-0 abec-card abec-card-static p-5 lg:p-6 cursor-pointer flex flex-col justify-between" data-status="available" data-course="epas" onclick="openCourse('epas')">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-lg bg-violet-50 text-violet-700 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </div>
+            <h3 class="text-base lg:text-lg font-bold text-abec-blue leading-snug">Electronic Product Assembly and Servicing NC II</h3>
+          </div>
+          <span class="shrink-0 text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-emerald-100 text-emerald-700">Available</span>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1.5">
+            <span class="text-slate-500">Enrollment Progress</span>
+            <span class="font-bold text-emerald-600">0% Occupied</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500 rounded-full" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center border-t border-slate-100 pt-4">
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Filled Slots</p><p class="text-2xl font-bold text-slate-800">0</p></div>
+          <div><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Total Slots</p><p class="text-2xl font-bold text-slate-800">25</p></div>
+          <div class="bg-emerald-50 rounded-lg py-2"><p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Available</p><p class="text-2xl font-bold text-emerald-600">25</p></div>
+        </div>
+      </article>
+    </section>
+  </div>
+</div>
+<!-- ========== VIEW: COURSE OVERVIEW (END) ========== -->
+
+<!-- ========== VIEW: COURSE DETAIL (BEGIN) ========== -->
+<!-- Formerly CourseDetail.html — students, occupancy, archive actions -->
+<div id="view-detail" class="hidden">
+<button type="button" data-abec-back-btn="true" onclick="showView('overview')" class="abec-back-btn">
+  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7"></path></svg>
+</button>
+
+<header class="mb-8">
+  <h2 id="course-title" class="text-2xl md:text-3xl font-bold text-abec-blue">Course Name</h2>
+</header>
+
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div class="abec-card abec-card-static p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Capacity</p>
+      <p class="text-lg font-bold text-slate-800"><span id="stat-total">25</span> Students</p>
+    </div>
+  </div>
+  <div class="abec-card abec-card-static p-5 flex items-center gap-4 border-l-4 border-l-amber-400">
+    <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Currently Filled</p>
+      <p class="text-lg font-bold text-amber-700"><span id="stat-filled">0</span> Students</p>
+    </div>
+  </div>
+  <div class="abec-card abec-card-static p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Remaining Slots</p>
+      <p class="text-lg font-bold text-slate-800"><span id="stat-remaining">25</span> Slots</p>
+    </div>
+  </div>
+</section>
+
+<section class="abec-card abec-card-static overflow-hidden mb-8">
+  <div class="p-5 border-b border-slate-100">
+    <div class="relative max-w-md">
+      <svg class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      <input id="student-search" type="text" placeholder="Search.. " class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-11 pr-4 text-sm focus:ring-abec-blue focus:border-abec-blue" oninput="filterStudents()">
+    </div>
+  </div>
+  <div class="overflow-x-auto max-h-[420px] overflow-y-auto">
+    <table class="w-full text-left min-w-[720px]">
+      <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100 sticky top-0 z-10">
+        <tr>
+          <th class="px-5 py-3.5">Gmail</th>
+          <th class="px-5 py-3.5">Student Name</th>
+          <th class="px-5 py-3.5">Enrollment Date</th>
+          <th class="px-5 py-3.5">Contact Info</th>
+          <th class="px-5 py-3.5 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="student-table-body" class="divide-y divide-slate-100"></tbody>
+    </table>
+  </div>
+  <div class="px-5 py-4 border-t border-slate-100 flex justify-end">
+    <div class="flex items-center gap-1">
+      <button type="button" class="p-1.5 border border-slate-200 rounded hover:bg-slate-50 text-slate-400" aria-label="Previous"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+      <button type="button" class="w-8 py-1 text-xs font-bold bg-abec-navy text-white rounded">1</button>
+      <button type="button" class="w-8 py-1 text-xs font-medium border border-slate-200 rounded hover:bg-white text-slate-600">2</button>
+      <button type="button" class="w-8 py-1 text-xs font-medium border border-slate-200 rounded hover:bg-white text-slate-600">3</button>
+      <button type="button" class="p-1.5 border border-slate-200 rounded hover:bg-slate-50 text-slate-400" aria-label="Next"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+    </div>
+  </div>
+</section>
+
+<section class="abec-card abec-card-static p-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+    <h3 class="text-lg font-bold text-abec-blue">Occupancy Distribution</h3>
+    <span id="capacity-badge" class="inline-block text-[10px] font-bold uppercase px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Available</span>
+  </div>
+  <div class="flex items-center gap-4 mb-2">
+    <div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
+      <div id="occupancy-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+    <span id="occupancy-ratio" class="text-sm font-bold text-slate-700 shrink-0">0/25</span>
+  </div>
+  <p id="occupancy-note" class="text-xs text-slate-500">Slots are still available for new enrollees in this course.</p>
+</section>
+</div>
+<!-- ========== VIEW: COURSE DETAIL (END) ========== -->
+
+<!-- ========== VIEW: COURSE SCHEDULE (BEGIN) ========== -->
+<!-- Formerly CourseSchedule.html — schedule list, calendar, saved schedules -->
+<div id="view-schedule" class="hidden">
+<button type="button" data-abec-back-btn="true" onclick="showView('overview')" class="abec-back-btn">
+  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7"></path></svg>
+</button>
+<header class="mb-6">
+  <h2 class="text-2xl md:text-3xl font-bold text-abec-blue">Course Schedule Management</h2>
+</header>
+
+<div id="conflict-alert" class="hidden mb-6 bg-red-50 border border-red-200 border-l-4 border-l-red-500 rounded-lg px-4 py-3 flex items-start justify-between gap-3">
+  <div class="flex items-start gap-3">
+    <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    <p class="text-sm text-red-800"><span class="font-bold">Conflict Detected.</span> A schedule conflict was found for the selected trainer, room, or time slot.</p>
+  </div>
+  <button type="button" onclick="document.getElementById('conflict-alert').classList.add('hidden')" class="text-red-400 hover:text-red-600 shrink-0" aria-label="Dismiss">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+  </button>
+</div>
+
+<div class="space-y-5">
+  <!-- Current Schedule List (full width) -->
+  <section class="abec-card abec-card-static overflow-hidden">
+    <div class="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h3 class="text-lg font-bold text-abec-blue">Current Schedule List</h3>
+      <button type="button" onclick="openCreateScheduleModal()" class="inline-flex items-center justify-center gap-2 abec-btn abec-btn-primary shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Create New Course Schedule
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left min-w-[700px]">
+        <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100">
+          <tr>
+            <th class="px-4 py-3">Course</th>
+            <th class="px-4 py-3">Assigned Trainer</th>
+            <th class="px-4 py-3">Room</th>
+            <th class="px-4 py-3">Schedule</th>
+            <th class="px-4 py-3">Timeline</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-sm">
+          <tr>
+            <td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">No course schedules yet. Create a new schedule to get started.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Calendar + Saved Schedules: equal height row -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 items-stretch">
+    <!-- Schedule Calendar -->
+    <section class="equal-panel xl:col-span-2 abec-card abec-card-static overflow-hidden flex flex-col">
+      <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-2 shrink-0">
+        <h3 class="text-sm font-bold text-abec-blue">Schedule Calendar</h3>
+        <div class="flex items-center gap-1">
+          <button type="button" onclick="changeMonth(-1)" class="p-1.5 border border-slate-200 rounded-md hover:bg-slate-50 text-slate-500" aria-label="Previous month">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          </button>
+          <span id="cal-month-label" class="text-xs font-bold text-slate-800 min-w-[110px] text-center">July 2026</span>
+          <button type="button" onclick="changeMonth(1)" class="p-1.5 border border-slate-200 rounded-md hover:bg-slate-50 text-slate-500" aria-label="Next month">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          </button>
+        </div>
+      </div>
+      <div class="p-3 flex-1 flex flex-col min-h-0 overflow-hidden">
+        <div class="grid grid-cols-7 gap-px bg-slate-200 border border-slate-200 rounded-t-md overflow-hidden shrink-0">
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Sun</div>
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Mon</div>
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Tue</div>
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Wed</div>
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Thu</div>
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Fri</div>
+          <div class="bg-slate-50 py-1.5 text-center text-[9px] font-bold uppercase text-slate-500">Sat</div>
+        </div>
+        <div id="cal-grid" class="grid grid-cols-7 gap-px bg-slate-200 border border-t-0 border-slate-200 rounded-b-md overflow-hidden flex-1 min-h-0"></div>
+      </div>
+      <div class="px-4 py-2.5 border-t border-slate-100 flex flex-wrap gap-3 text-[9px] text-slate-500 shrink-0">
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-blue-400"></span> Bookkeeping</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-emerald-400"></span> CSS</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-amber-400"></span> Customer</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-violet-400"></span> EPAS</span>
+      </div>
+    </section>
+
+    <!-- Saved Schedules -->
+    <aside class="equal-panel abec-card abec-card-static p-4 flex flex-col overflow-hidden">
+      <h3 class="text-base font-bold text-abec-blue mb-3 shrink-0">Saved Schedules</h3>
+      <div class="space-y-3 overflow-y-auto custom-scrollbar flex-1 min-h-0 pr-1">
+        <p class="text-sm text-slate-500 text-center py-8 px-2">No saved schedules yet.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+</div>
+<!-- ========== VIEW: COURSE SCHEDULE (END) ========== -->
+
+</main>
+</div>
+
+<!-- ========== SCHEDULE MODALS (BEGIN) ========== -->
+<!-- Formerly in CourseSchedule.html -->
+<!-- Course Schedule Management Modal -->
+<div id="create-schedule-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 abec-modal-backdrop" onclick="closeCreateScheduleModal()"></div>
+  <div class="schedule-modal-card relative bg-white rounded-xl border border-slate-200 shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 z-10 px-5 py-4 border-b border-slate-100 bg-slate-50/95 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full border-2 border-abec-navy text-abec-navy flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </div>
+        <h3 class="text-base font-bold text-abec-blue">Course Schedule Management</h3>
+      </div>
+      <button type="button" onclick="closeCreateScheduleModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" aria-label="Close">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      </button>
+    </div>
+
+    <form class="p-5 space-y-4" onsubmit="handleSaveSchedule(event)">
+      <div>
+        <label for="select-course" class="block text-xs font-bold text-slate-600 mb-1.5">Select Course</label>
+        <select id="select-course" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+          <option value="bookkeeping">Bookkeeping NC II</option>
+          <option value="css">Computer System Servicing NC II</option>
+          <option value="customer">Customer Services NC II</option>
+          <option value="epas">Electronic Product Assembly and Servicing NC II</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="select-trainer" class="block text-xs font-bold text-slate-600 mb-1.5">Assigned Trainer</label>
+        <select id="select-trainer" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+          <option value="">Select trainer</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="select-room" class="block text-xs font-bold text-slate-600 mb-1.5">Training Room</label>
+        <select id="select-room" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+          <option>Room 101 – Lecture Hall</option>
+          <option>Room 105 – Training Room</option>
+          <option>Lab 301 – Computer Lab</option>
+          <option>Lab 402 – Technical Lab</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="start-date" class="block text-xs font-bold text-slate-600 mb-1.5">Start Date</label>
+          <input id="start-date" type="date" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+        </div>
+        <div>
+          <label for="end-date" class="block text-xs font-bold text-slate-600 mb-1.5">End Date</label>
+          <input id="end-date" type="date" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 mb-2">Training Days</label>
+        <div class="flex flex-wrap gap-2" id="day-buttons">
+          <button type="button" data-day="M" class="day-btn w-9 h-9 rounded-full border border-slate-300 text-sm font-bold text-slate-600 hover:border-abec-navy transition-colors" onclick="toggleDay(this)">M</button>
+          <button type="button" data-day="T" class="day-btn w-9 h-9 rounded-full border border-slate-300 text-sm font-bold text-slate-600 hover:border-abec-navy transition-colors" onclick="toggleDay(this)">T</button>
+          <button type="button" data-day="W" class="day-btn w-9 h-9 rounded-full border border-slate-300 text-sm font-bold text-slate-600 hover:border-abec-navy transition-colors" onclick="toggleDay(this)">W</button>
+          <button type="button" data-day="Th" class="day-btn w-9 h-9 rounded-full border border-slate-300 text-sm font-bold text-slate-600 hover:border-abec-navy transition-colors" onclick="toggleDay(this)">T</button>
+          <button type="button" data-day="F" class="day-btn w-9 h-9 rounded-full border border-slate-300 text-sm font-bold text-slate-600 hover:border-abec-navy transition-colors" onclick="toggleDay(this)">F</button>
+          <button type="button" data-day="S" class="day-btn w-9 h-9 rounded-full border border-slate-300 text-sm font-bold text-slate-600 hover:border-abec-navy transition-colors" onclick="toggleDay(this)">S</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="start-time" class="block text-xs font-bold text-slate-600 mb-1.5">Start Time</label>
+          <input id="start-time" type="time" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+        </div>
+        <div>
+          <label for="end-time" class="block text-xs font-bold text-slate-600 mb-1.5">End Time</label>
+          <input id="end-time" type="time" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+        </div>
+      </div>
+
+      <div>
+        <label for="select-status" class="block text-xs font-bold text-slate-600 mb-1.5">Status</label>
+        <select id="select-status" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+
+      <div class="flex flex-wrap gap-3 pt-1">
+        <button type="submit" class="bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">Save Schedule</button>
+        <button type="button" onclick="closeCreateScheduleModal()" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Schedule Configuration Modal (row click) -->
+<div id="schedule-config-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="config-title">
+  <div class="absolute inset-0 abec-modal-backdrop" onclick="closeScheduleConfig()"></div>
+  <div class="schedule-modal-card relative bg-white rounded-xl border border-slate-200 shadow-lg w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+    <form onsubmit="handleUpdateSchedule(event)">
+      <div class="px-6 pt-6 pb-4 flex items-start justify-between gap-4">
+        <div class="flex items-start gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-lg bg-abec-navy text-white flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          </div>
+          <div class="min-w-0">
+            <h3 id="config-title" class="text-xl font-bold text-abec-blue leading-tight">Schedule Configuration</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Update the timing, location, and instructor for this course instance.</p>
+          </div>
+        </div>
+        <span id="config-status-badge" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Status: Active</span>
+      </div>
+
+      <div class="px-6 pb-6 space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="config-course" class="block text-xs font-bold text-slate-600 mb-1.5">Course</label>
+            <input id="config-course" type="text" readonly class="w-full border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-700 focus:ring-0 focus:border-slate-200 cursor-default">
+          </div>
+          <div>
+            <label for="config-trainer" class="block text-xs font-bold text-slate-600 mb-1.5">Assigned Trainer</label>
+            <select id="config-trainer" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+              <option value="">Select trainer</option>
+            </select>
+          </div>
+          <div>
+            <label for="config-room" class="block text-xs font-bold text-slate-600 mb-1.5">Training Room</label>
+            <select id="config-room" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+              <option>Room 101 – Lecture Hall</option>
+              <option>Room 105 – Training Room</option>
+              <option>Lab 301 – Computer Lab</option>
+              <option>Lab 402 – Technical Lab</option>
+            </select>
+          </div>
+          <div>
+            <span class="block text-xs font-bold text-slate-600 mb-2">Current Schedule Status</span>
+            <div class="flex items-center gap-6 h-[42px]">
+              <label class="inline-flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="config-status" value="Active" class="text-abec-navy focus:ring-abec-navy" onchange="syncConfigStatusBadge()">
+                Active
+              </label>
+              <label class="inline-flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="config-status" value="Inactive" class="text-abec-navy focus:ring-abec-navy" onchange="syncConfigStatusBadge()">
+                Inactive
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <h4 class="text-[11px] font-bold uppercase tracking-wide text-abec-blue shrink-0">Date &amp; Time Range</h4>
+            <div class="h-px flex-1 bg-slate-200"></div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="config-start-date" class="block text-xs font-bold text-slate-600 mb-1.5">Start Date</label>
+              <input id="config-start-date" type="date" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+            </div>
+            <div>
+              <label for="config-end-date" class="block text-xs font-bold text-slate-600 mb-1.5">End Date</label>
+              <input id="config-end-date" type="date" class="w-full border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] gap-4 items-end">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-2">Training Days</label>
+              <div class="flex flex-wrap gap-2" id="config-day-buttons">
+                <button type="button" data-day="M" class="day-btn-sq" onclick="toggleDay(this)">M</button>
+                <button type="button" data-day="T" class="day-btn-sq" onclick="toggleDay(this)">T</button>
+                <button type="button" data-day="W" class="day-btn-sq" onclick="toggleDay(this)">W</button>
+                <button type="button" data-day="Th" class="day-btn-sq" onclick="toggleDay(this)">T</button>
+                <button type="button" data-day="F" class="day-btn-sq" onclick="toggleDay(this)">F</button>
+                <button type="button" data-day="S" class="day-btn-sq" onclick="toggleDay(this)">S</button>
+              </div>
+            </div>
+            <div>
+              <label for="config-start-time" class="block text-xs font-bold text-slate-600 mb-1.5">Start Time</label>
+              <input id="config-start-time" type="time" class="w-40 border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+            </div>
+            <div>
+              <label for="config-end-time" class="block text-xs font-bold text-slate-600 mb-1.5">End Time</label>
+              <input id="config-end-time" type="time" class="w-40 border-slate-200 rounded-lg text-sm focus:ring-abec-blue focus:border-abec-blue">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 flex items-start gap-3">
+          <svg class="w-5 h-5 text-abec-navy shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <p class="text-sm text-slate-600 leading-relaxed">Updating this schedule will notify the assigned trainer and currently enrolled students automatically. Ensure all room bookings are cleared before saving changes.</p>
+        </div>
+
+        <div class="flex flex-wrap justify-end gap-3 pt-1">
+          <button type="button" onclick="closeScheduleConfig()" class="border border-abec-navy text-abec-navy hover:bg-slate-50 text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">Cancel Changes</button>
+          <button type="submit" class="bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">Update Schedule</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- ========== SCHEDULE MODALS (END) ========== -->
+
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+<!-- ========== SCRIPTS (BEGIN) ========== -->
+<script>
+  /* --- View navigation --- */
+  function showView(name, courseId) {
+    var overview = document.getElementById('view-overview');
+    var detail = document.getElementById('view-detail');
+    var schedule = document.getElementById('view-schedule');
+    var main = document.getElementById('main-shell');
+
+    overview.classList.toggle('hidden', name !== 'overview');
+    detail.classList.toggle('hidden', name !== 'detail');
+    schedule.classList.toggle('hidden', name !== 'schedule');
+
+    if (name === 'overview') {
+      main.className = 'abec-main app-main h-screen overflow-hidden flex flex-col';
+      document.title = 'Course Management - ABEC Admin';
+      if (window.AbecShell) {
+        window.AbecShell.exitSecondary();
+      }
+    } else {
+      main.className = 'abec-main app-main min-h-screen overflow-y-auto';
+      if (window.AbecShell) {
+        window.AbecShell.enterSecondary({
+          backLabel: 'Back to Course Management',
+          skipInjectedBack: true,
+          onBack: function () { showView('overview'); }
+        });
+      }
+    }
+
+    if (name === 'detail') {
+      loadCourseDetail(courseId);
+      document.title = 'Course Detail - ABEC Admin';
+    }
+    if (name === 'schedule') {
+      document.title = 'Course Schedule Management - ABEC Admin';
+      renderCalendar();
+    }
+
+    window.scrollTo(0, 0);
+  }
+
+  /* --- Course Overview --- */
+  function openCourse(id) {
+    showView('detail', id);
+  }
+
+  function filterCourses() {
+    var filter = document.getElementById('course-filter').value;
+    document.querySelectorAll('.course-card').forEach(function (card) {
+      var status = card.getAttribute('data-status');
+      var show = filter === 'all' || filter === status;
+      card.classList.toggle('hidden', !show);
+    });
+  }
+
+  /* --- Course Detail (from CourseDetail.html) --- */
+var courses = {
+    bookkeeping: {
+      name: 'Bookkeeping NC II',
+      total: 25, filled: 0,
+      barColor: 'bg-emerald-500',
+      badgeClass: 'bg-emerald-100 text-emerald-700',
+      badgeText: 'Available',
+      note: 'Slots are still available for new enrollees in this course.',
+      students: []
+    },
+    css: {
+      name: 'Computer System Servicing NC II',
+      total: 25, filled: 0,
+      barColor: 'bg-emerald-500',
+      badgeClass: 'bg-emerald-100 text-emerald-700',
+      badgeText: 'Available',
+      note: 'Slots are still available for new enrollees in this course.',
+      students: []
+    },
+    customer: {
+      name: 'Customer Services NC II',
+      total: 25, filled: 0,
+      barColor: 'bg-emerald-500',
+      badgeClass: 'bg-emerald-100 text-emerald-700',
+      badgeText: 'Available',
+      note: 'Slots are still available for new enrollees in this course.',
+      students: []
+    },
+    epas: {
+      name: 'Electronic Product Assembly and Servicing NC II',
+      total: 25, filled: 0,
+      barColor: 'bg-emerald-500',
+      badgeClass: 'bg-emerald-100 text-emerald-700',
+      badgeText: 'Available',
+      note: 'Slots are still available for new enrollees in this course.',
+      students: []
+    }
+  };
+
+  var currentCourse = null;
+
+  function loadCourseDetail(id) {
+    id = id || 'bookkeeping';
+    currentCourse = courses[id] || courses.bookkeeping;
+
+    document.title = currentCourse.name + ' - ABEC Admin';
+    document.getElementById('course-title').textContent = currentCourse.name;
+    document.getElementById('stat-total').textContent = currentCourse.total;
+    document.getElementById('stat-filled').textContent = currentCourse.filled;
+    document.getElementById('stat-remaining').textContent = currentCourse.total - currentCourse.filled;
+
+    var pct = Math.round((currentCourse.filled / currentCourse.total) * 100);
+    document.getElementById('occupancy-bar').style.width = pct + '%';
+    document.getElementById('occupancy-bar').className = 'h-full rounded-full transition-all duration-500 ' + currentCourse.barColor;
+    document.getElementById('occupancy-ratio').textContent = currentCourse.filled + '/' + currentCourse.total;
+    document.getElementById('occupancy-note').textContent = currentCourse.note;
+
+    var badge = document.getElementById('capacity-badge');
+    badge.textContent = currentCourse.badgeText;
+    badge.className = 'inline-block text-[10px] font-bold uppercase px-3 py-1 rounded-full ' + currentCourse.badgeClass;
+
+    renderStudents(currentCourse.students);
+  }
+
+  function renderStudents(students) {
+    var tbody = document.getElementById('student-table-body');
+    if (!students || students.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-sm text-slate-500">No students enrolled yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = students.map(function (s) {
+      return '<tr class="student-row hover:bg-slate-50/60" data-name="' + s.name.toLowerCase() + '" data-gmail="' + s.gmail.toLowerCase() + '">' +
+        '<td class="px-5 py-3.5 text-sm text-slate-700">' + s.gmail + '</td>' +
+        '<td class="px-5 py-3.5"><div class="flex items-center gap-3"><img src="' + s.photo + '" alt="" class="w-8 h-8 rounded-full object-cover border border-slate-200"><span class="text-sm font-semibold text-slate-800">' + s.name + '</span></div></td>' +
+        '<td class="px-5 py-3.5 text-sm text-slate-600">' + s.date + '</td>' +
+        '<td class="px-5 py-3.5 text-sm text-slate-600">' + s.phone + '</td>' +
+        '<td class="px-5 py-3.5 text-center"><button type="button" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-colors" aria-label="Archive ' + s.name + '"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> Archive</button></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function filterStudents() {
+    var q = document.getElementById('student-search').value.trim().toLowerCase();
+    document.querySelectorAll('.student-row').forEach(function (row) {
+      var name = row.getAttribute('data-name') || '';
+      var gmail = row.getAttribute('data-gmail') || '';
+      row.classList.toggle('hidden', q && name.indexOf(q) === -1 && gmail.indexOf(q) === -1);
+    });
+  }
+
+
+  /* --- Course Schedule (from CourseSchedule.html) --- */
+var calYear = 2026;
+  var calMonth = 6; // July (0-indexed)
+
+  var scheduleEvents = {};
+
+  var scheduleDetails = {};
+
+  function changeMonth(delta) {
+    calMonth += delta;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('cal-month-label').textContent = months[calMonth] + ' ' + calYear;
+
+    var firstDay = new Date(calYear, calMonth, 1).getDay();
+    var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    var daysInPrev = new Date(calYear, calMonth, 0).getDate();
+    var today = new Date();
+    var isCurrentMonth = today.getFullYear() === calYear && today.getMonth() === calMonth;
+
+    var html = '';
+    var cell = 0;
+
+    for (var i = firstDay - 1; i >= 0; i--) {
+      html += dayCell(daysInPrev - i, true, false);
+      cell++;
+    }
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var isToday = isCurrentMonth && d === today.getDate();
+      html += dayCell(d, false, isToday);
+      cell++;
+    }
+
+    while (cell % 7 !== 0) {
+      html += dayCell(cell - daysInMonth - firstDay + 2, true, false);
+      cell++;
+    }
+
+    document.getElementById('cal-grid').innerHTML = html;
+  }
+
+  function dayCell(dayNum, otherMonth, isToday) {
+    if (otherMonth) {
+      return '<div class="cal-day other-month bg-white p-1"><span class="text-[10px] text-slate-300">' + dayNum + '</span></div>';
+    }
+
+    var dow = new Date(calYear, calMonth, dayNum).getDay();
+    var dots = '';
+    Object.keys(scheduleEvents).forEach(function (key) {
+      var ev = scheduleEvents[key];
+      if (ev.days.indexOf(dow) !== -1) {
+        dots += '<span class="inline-block w-1.5 h-1.5 rounded-full ' + ev.dot + '" title="' + ev.label + '"></span>';
+      }
+    });
+
+    return '<div class="cal-day bg-white p-1' + (isToday ? ' today' : '') + '">' +
+      '<span class="text-[10px] font-semibold text-slate-700">' + dayNum + '</span>' +
+      (dots ? '<div class="flex flex-wrap gap-0.5 mt-0.5">' + dots + '</div>' : '') +
+      '</div>';
+  }
+
+  function openCreateScheduleModal() {
+    document.getElementById('create-schedule-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCreateScheduleModal() {
+    document.getElementById('create-schedule-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function openScheduleConfig(id) {
+    var data = scheduleDetails[id];
+    if (!data) return;
+
+    document.getElementById('config-course').value = data.course;
+    document.getElementById('config-trainer').value = data.trainer;
+    document.getElementById('config-room').value = data.room;
+    document.getElementById('config-start-date').value = data.startDate;
+    document.getElementById('config-end-date').value = data.endDate;
+    document.getElementById('config-start-time').value = data.startTime;
+    document.getElementById('config-end-time').value = data.endTime;
+
+    var radios = document.querySelectorAll('input[name="config-status"]');
+    radios.forEach(function (r) {
+      r.checked = r.value === data.status;
+    });
+    syncConfigStatusBadge();
+
+    document.querySelectorAll('#config-day-buttons .day-btn-sq').forEach(function (btn) {
+      var day = btn.getAttribute('data-day');
+      btn.classList.toggle('selected', data.days.indexOf(day) !== -1);
+    });
+
+    document.getElementById('schedule-config-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeScheduleConfig() {
+    document.getElementById('schedule-config-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function syncConfigStatusBadge() {
+    var selected = document.querySelector('input[name="config-status"]:checked');
+    var badge = document.getElementById('config-status-badge');
+    var status = selected ? selected.value : 'Active';
+    badge.textContent = 'Status: ' + status;
+    if (status === 'Active') {
+      badge.className = 'shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700';
+    } else {
+      badge.className = 'shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-700';
+    }
+  }
+
+  function toggleDay(btn) {
+    btn.classList.toggle('selected');
+  }
+
+  function handleSaveSchedule(e) {
+    e.preventDefault();
+    closeCreateScheduleModal();
+  }
+
+  function handleUpdateSchedule(e) {
+    e.preventDefault();
+    closeScheduleConfig();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeCreateScheduleModal();
+      closeScheduleConfig();
+    }
+  });
+
+  // Calendar is rendered when the schedule view is shown
+
+  /* --- Boot: honor ?view= and ?course= for deep links / redirects --- */
+  (function boot() {
+    var params = new URLSearchParams(window.location.search);
+    var view = params.get('view') || 'overview';
+    var course = params.get('course') || 'bookkeeping';
+    if (view === 'detail') {
+      showView('detail', course);
+    } else if (view === 'schedule') {
+      showView('schedule');
+    } else {
+      showView('overview');
+    }
+  })();
+</script>
+<!-- ========== SCRIPTS (END) ========== -->
+</body>
+</html>

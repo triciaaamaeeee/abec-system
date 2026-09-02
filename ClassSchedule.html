@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Class Schedule - ABEC Student</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Plus Jakarta Sans', Inter, sans-serif; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+  <div class="p-6 flex items-center gap-3">
+    <img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    <div>
+      <h1 class="abec-brand-title">ABEC</h1>
+      <p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+    </div>
+  </div>
+  <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <a class="abec-nav-link" href="StudentDashboard.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Dashboard
+    </a>
+    <a class="abec-nav-link abec-nav-link-active" href="ClassSchedule.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Class Schedules
+    </a>
+    <a class="abec-nav-link" href="DocumentRequest.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Document Requests
+    </a>
+    <a class="abec-nav-link" href="Notifications.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Notifications
+    </a>
+  </nav>
+  <div class="abec-sidebar-footer">
+    <div class="abec-profile-chip">
+      <div class="w-10 h-10 rounded-full bg-white/15 text-white text-[11px] font-bold flex items-center justify-center shrink-0">ST</div>
+      <div class="overflow-hidden">
+        <p class="text-xs font-semibold truncate">Student</p>
+        <p class="text-[10px] text-white/45">Student</p>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <a class="abec-footer-link" href="UserSettings.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        User Settings
+      </a>
+      <a class="abec-footer-link" href="../Home/SignOutPage.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Sign Out
+       
+      </a>
+    </div>
+  </div>
+</aside>
+<!-- ========== SIDEBAR (END) ========== -->
+
+<main class="abec-main h-screen overflow-hidden flex flex-col gap-4">
+  <!-- Schedule table (scrollable body only) -->
+  <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col flex-1 min-h-0">
+    <div class="px-6 py-5 border-b border-slate-100 shrink-0">
+      <h2 class="text-xl font-bold text-abec-blue">Class Schedule Details</h2>
+    </div>
+
+    <div class="overflow-auto flex-1 min-h-0">
+      <table class="w-full text-left min-w-[900px]">
+        <thead class="bg-slate-50 sticky top-0 z-10">
+          <tr class="text-sm font-bold text-abec-blue border-b-2 border-abec-navy">
+            <th class="px-6 py-4 bg-slate-50">Day</th>
+            <th class="px-6 py-4 bg-slate-50">Time</th>
+            <th class="px-6 py-4 bg-slate-50">Module / Subject</th>
+            <th class="px-6 py-4 bg-slate-50">Instructor</th>
+            <th class="px-6 py-4 bg-slate-50">Room</th>
+            <th class="px-6 py-4 bg-slate-50">Hours</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-sm text-abec-blue">
+          <tr>
+            <td colspan="6" class="px-6 py-12 text-center text-sm text-slate-500">No classes scheduled.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Information / Notifications panel (fixed below schedule) -->
+  <section class="bg-white rounded-xl border border-slate-200 shadow-sm shrink-0 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+      <svg class="w-5 h-5 text-abec-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      <h3 class="text-lg font-bold text-abec-blue">Notifications</h3>
+    </div>
+    <div class="divide-y divide-slate-100 max-h-44 overflow-y-auto">
+      <div class="px-6 py-8 text-center">
+        <p class="text-sm text-slate-500">No schedule notifications.</p>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+</body>
+</html>

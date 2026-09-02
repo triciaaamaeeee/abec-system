@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notifications - ABEC Student</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Plus Jakarta Sans', Inter, sans-serif; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+
+  /* Notification cards: lock readable text in default + hover (no fade/transparent) */
+  #notification-list .notif-card {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+    color: #1e293b;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  #notification-list .notif-card:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
+  #notification-list .notif-card .notif-title {
+    color: #0B2747;
+  }
+  #notification-list .notif-card:hover .notif-title {
+    color: #0B2747;
+  }
+  #notification-list .notif-card .notif-body {
+    color: #475569;
+  }
+  #notification-list .notif-card:hover .notif-body {
+    color: #475569;
+  }
+  #notification-list .notif-card .notif-meta {
+    color: #64748b;
+  }
+  #notification-list .notif-card:hover .notif-meta {
+    color: #64748b;
+  }
+  #notification-list .notif-card .notif-tag {
+    background-color: #f1f5f9;
+    color: #334155;
+  }
+  #notification-list .notif-card .notif-ref {
+    color: #1B4F7A;
+  }
+  #notification-list .notif-card:hover .notif-ref {
+    color: #1B4F7A;
+  }
+
+  /* Filter pills: keep active label white even on hover */
+  .notif-filter {
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .notif-filter.is-active,
+  .notif-filter.is-active:hover {
+    background-color: #0B2747;
+    color:white;
+  }
+  .notif-filter:not(.is-active) {
+    background-color: transparent;
+    color: #475569;
+  }
+
+  /* Select mode */
+  .notif-check {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  body.select-mode .notif-check {
+    display: flex;
+  }
+  body.select-mode .notif-card.is-selected {
+    box-shadow: 0 0 0 1px rgba(27, 79, 122, 0.2);
+    color: black;
+    background-color: #0B2747;
+  }
+  .notif-check input {
+    width: 1.05rem;
+    height: 1.05rem;
+    accent-color: #0B2747;
+    cursor: pointer;
+  }
+  #select-toolbar {
+    display: none;
+  }
+  body.select-mode #select-toolbar {
+    display: flex;
+  }
+  #bulk-actions {
+    display: none;
+  }
+  #bulk-actions.is-visible {
+    display: flex;
+  }
+  body.select-mode .notif-card {
+    cursor: pointer;
+  }
+  #btn-bulk-mark-read.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  #btn-bulk-mark-read-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+  #btn-bulk-mark-read-wrap.is-blocked {
+    cursor: not-allowed;
+  }
+  #archive-modal {
+    display: none;
+  }
+  #archive-modal.is-open {
+    display: flex;
+  }
+  #doc-detail-modal {
+    display: none;
+  }
+  #doc-detail-modal.is-open {
+    display: flex;
+  }
+  body:not(.select-mode) .notif-card[data-category="documents"] {
+    cursor: pointer;
+  }
+  .timeline-line {
+    position: absolute;
+    left: 0.34375rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: #e2e8f0;
+  }
+  #toast-message {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    z-index: 200;
+    max-width: min(92vw, 28rem);
+    padding: 0.75rem 1.1rem;
+    border-radius: 0.75rem;
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  #toast-message.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+  <div class="p-6 flex items-center gap-3">
+    <img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    <div>
+      <h1 class="abec-brand-title">ABEC</h1>
+      <p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+    </div>
+  </div>
+  <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <a class="abec-nav-link" href="StudentDashboard.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Dashboard
+    </a>
+    <a class="abec-nav-link" href="ClassSchedule.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Class Schedules
+    </a>
+    <a class="abec-nav-link" href="DocumentRequest.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Document Requests
+    </a>
+    <a class="abec-nav-link abec-nav-link-active" href="Notifications.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Notifications
+    </a>
+  </nav>
+  <div class="abec-sidebar-footer">
+    <div class="abec-profile-chip">
+      <div class="w-10 h-10 rounded-full bg-white/15 text-white text-[11px] font-bold flex items-center justify-center shrink-0">ST</div>
+      <div class="overflow-hidden">
+        <p class="text-xs font-semibold truncate">Student</p>
+        <p class="text-[10px] text-white/45">Student</p>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <a class="abec-footer-link" href="UserSettings.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        User Settings
+      </a>
+      <a class="abec-footer-link" href="../Home/SignOutPage.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Sign Out
+      </a>
+    </div>
+  </div>
+</aside>
+<!-- ========== SIDEBAR (END) ========== -->
+
+<main class="abec-main min-h-screen text-slate-800" style="color:#1e293b;">
+  <header id="notifications-top" class="mb-6">
+    <h2 class="text-2xl font-bold" style="color:#0B2747;">Notifications</h2>
+    <p class="text-sm mt-1" style="color:#64748b;">Manage your institutional alerts and updates.</p>
+  </header>
+
+  <div id="inbox-view">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div class="flex flex-wrap items-center gap-1" role="tablist" aria-label="Notification filters">
+      <button type="button" class="notif-filter is-active px-3.5 py-1.5 rounded-full text-sm font-semibold" data-filter="all">All</button>
+      <button type="button" class="notif-filter px-3.5 py-1.5 rounded-full text-sm font-medium" data-filter="enrollment">Enrollment</button>
+      <button type="button" class="notif-filter px-3.5 py-1.5 rounded-full text-sm font-medium" data-filter="documents">Documents</button>
+      <button type="button" class="notif-filter px-3.5 py-1.5 rounded-full text-sm font-medium" data-filter="course">Course</button>
+      <button type="button" class="notif-filter px-3.5 py-1.5 rounded-full text-sm font-medium" data-filter="system">System</button>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" id="btn-select-mode" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50 transition-[background-color]" style="color:#334155;">
+        <svg class="w-4 h-4 shrink-0" style="color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span id="btn-select-mode-label">Select</span>
+      </button>
+      <button type="button" id="btn-archive" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50 transition-[background-color]" style="color:#334155;">
+        <svg class="w-4 h-4 shrink-0" style="color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span id="btn-archive-label">Archive Notifications</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Select mode toolbar -->
+  <div id="select-toolbar" class="flex flex-wrap items-center justify-between gap-3 mb-4 px-4 py-3 rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" id="btn-select-all" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-bold text-white transition-colors" style="background-color:#059669;">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span id="btn-select-all-label">Select All</span>
+      </button>
+      <span id="selection-count" class="text-xs font-medium" style="color:#64748b;">0 selected</span>
+    </div>
+    <div id="bulk-actions" class="flex flex-wrap items-center gap-2">
+      <div id="btn-bulk-mark-read-wrap">
+        <button type="button" id="btn-bulk-mark-read" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50" style="color:#334155;">
+          <svg class="w-4 h-4 shrink-0" style="color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Mark as Read
+        </button>
+      </div>
+      <button type="button" id="btn-bulk-clear-read" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50" style="color:#334155;">
+        <svg class="w-4 h-4 shrink-0" style="color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Clear Read
+      </button>
+    </div>
+  </div>
+
+  <div id="notification-list" class="space-y-3">
+    <p id="inbox-empty" class="px-4 py-12 text-center text-sm" style="color:#64748b;">No notifications yet.</p>
+  </div>
+  </div>
+</main>
+
+</div>
+
+<!-- Document Notification Detail Popup -->
+<div id="doc-detail-modal" class="fixed inset-0 z-[110] items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="doc-detail-title">
+  <div class="absolute inset-0 bg-abec-navy/50 backdrop-blur-[1px]" data-close-doc-detail></div>
+  <div class="relative bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="px-6 pt-6 pb-5">
+      <div class="flex items-start justify-between gap-3 mb-4">
+        <span class="inline-flex items-center rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide" style="background-color:#e0f2fe; color:#0369a1;">Selected Detail</span>
+        <button type="button" class="text-slate-400 hover:text-slate-700 transition-colors" data-close-doc-detail aria-label="Close">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </button>
+      </div>
+
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#e0f2fe; color:#0B2747;">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      </div>
+
+      <h3 id="doc-detail-title" class="text-xl font-bold" style="color:#0f172a;">Document Request</h3>
+      <p id="doc-detail-time" class="text-sm mt-1" style="color:#64748b;">—</p>
+
+      <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm leading-relaxed" style="color:#334155;">
+        <p class="font-medium mb-2" style="color:#0f172a;">Dear Student,</p>
+        <p id="doc-detail-body">
+          Details for this document request will appear here when available.
+        </p>
+        <p class="mt-3" id="doc-detail-instructions">
+          Follow any release instructions provided by the registrar when your request is approved.
+        </p>
+      </div>
+
+      <div class="mt-6">
+        <h4 class="text-[11px] font-bold uppercase tracking-wider mb-4" style="color:#0f172a;">Recent Activity Timeline</h4>
+        <div class="relative pl-6 space-y-5">
+          <div class="timeline-line" aria-hidden="true"></div>
+
+          <div class="relative">
+            <span class="absolute -left-6 top-1 w-3 h-3 rounded-full border-2 border-slate-300 bg-white ring-4 ring-white"></span>
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-bold" style="color:#0f172a;">No activity yet</p>
+                <p class="text-xs mt-0.5" style="color:#64748b;">Timeline updates will appear here.</p>
+              </div>
+              <span class="text-xs shrink-0" style="color:#94a3b8;">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Archive Notifications Popup -->
+<div id="archive-modal" class="fixed inset-0 z-[100] items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="archive-modal-title">
+  <div class="absolute inset-0 bg-abec-navy/50 backdrop-blur-[1px]" data-close-archive-modal></div>
+  <div class="relative bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-6 py-5 border-b border-slate-200 shrink-0">
+      <div>
+        <h3 id="archive-modal-title" class="text-lg font-bold" style="color:#0B2747;">Archived Notifications</h3>
+        <p class="text-sm mt-0.5" style="color:#64748b;">Stored messages moved from your inbox.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="btn-restore-selected" class="hidden inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium hover:bg-slate-50" style="color:#334155;">
+          Restore Selected
+      </div>
+    </div>
+    <div id="archived-list" class="p-6 space-y-3 overflow-y-auto flex-1 min-h-0"></div>
+    <p id="archive-empty" class="hidden px-6 py-12 text-center text-sm" style="color:#64748b;">No archived notifications yet.</p>
+  </div>
+</div>
+
+<div id="toast-message" role="status" aria-live="polite"></div>
+
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+<script>
+  (function () {
+    const STORAGE_KEY = 'abec-student-archived-notifications-v2';
+    const LEGACY_STORAGE_KEY = 'abec-student-archived-notifications';
+    try { localStorage.removeItem(LEGACY_STORAGE_KEY); } catch (e) { /* ignore */ }
+    const filters = document.querySelectorAll('.notif-filter');
+    const listEl = document.getElementById('notification-list');
+    const archiveModal = document.getElementById('archive-modal');
+    const archivedList = document.getElementById('archived-list');
+    const archiveEmpty = document.getElementById('archive-empty');
+    const btnSelectMode = document.getElementById('btn-select-mode');
+    const btnSelectModeLabel = document.getElementById('btn-select-mode-label');
+    const btnSelectAll = document.getElementById('btn-select-all');
+    const btnSelectAllLabel = document.getElementById('btn-select-all-label');
+    const bulkActions = document.getElementById('bulk-actions');
+    const selectionCount = document.getElementById('selection-count');
+    const btnBulkMarkRead = document.getElementById('btn-bulk-mark-read');
+    const btnBulkMarkReadWrap = document.getElementById('btn-bulk-mark-read-wrap');
+    const btnArchive = document.getElementById('btn-archive');
+    const btnArchiveLabel = document.getElementById('btn-archive-label');
+    const btnRestoreSelected = document.getElementById('btn-restore-selected');
+    const toastEl = document.getElementById('toast-message');
+    let toastTimer = null;
+
+    const cards = () => listEl.querySelectorAll('.notif-card');
+    const archivedCards = () => archivedList.querySelectorAll('.notif-card');
+    const inboxEmpty = document.getElementById('inbox-empty');
+    const visibleCards = () => Array.from(cards()).filter(function (card) {
+      return !card.classList.contains('hidden');
+    });
+    const selectedCards = () => Array.from(cards()).filter(function (card) {
+      const cb = card.querySelector('.notif-checkbox');
+      return cb && cb.checked;
+    });
+    const selectedArchivedCards = () => Array.from(archivedCards()).filter(function (card) {
+      const cb = card.querySelector('.notif-checkbox');
+      return cb && cb.checked;
+    });
+
+    function syncInboxEmpty() {
+      if (!inboxEmpty) return;
+      const hasCards = cards().length > 0;
+      inboxEmpty.classList.toggle('hidden', hasCards);
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add('is-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        toastEl.classList.remove('is-visible');
+      }, 3200);
+    }
+
+ function openArchiveModal() {
+      renderArchived();
+      archiveModal.classList.add('is-open');
+      document.body.classList.add('overflow-hidden');
+      document.body.classList.add('select-mode');
+      btnSelectModeLabel.textContent = 'Cancel';
+      syncSelectionUi();
+    }
+
+    function closeArchiveModal() {
+      archiveModal.classList.remove('is-open');
+      document.body.classList.remove('overflow-hidden');
+      archivedCards().forEach(function (card) {
+        const cb = card.querySelector('.notif-checkbox');
+        if (cb) cb.checked = false;
+        card.classList.remove('is-selected');
+      });
+      syncSelectionUi();
+    }
+
+    function setActiveFilter(activeBtn) {
+      filters.forEach(function (b) {
+        b.classList.remove('is-active');
+      });
+      activeBtn.classList.add('is-active');
+    }
+
+    function applyFilter(filter) {
+      cards().forEach(function (card) {
+        const category = card.getAttribute('data-category');
+        const show = filter === 'all' || category === filter;
+        card.classList.toggle('hidden', !show);
+      });
+      syncSelectionUi();
+    }
+
+    function markCardRead(card) {
+      card.setAttribute('data-read', 'true');
+      card.classList.remove('pl-1');
+      const bar = card.querySelector('.unread-bar');
+      const dot = card.querySelector('.unread-dot');
+      if (bar) bar.remove();
+      if (dot) dot.remove();
+    }
+
+    function isUnread(card) {
+      return card.getAttribute('data-read') !== 'true';
+    }
+
+    function willRestoreArchive() {
+      return archiveModal.classList.contains('is-open') && selectedArchivedCards().length > 0;
+    }
+
+    function updateArchiveButton() {
+      btnArchiveLabel.textContent = willRestoreArchive()
+        ? 'Restore Notifications'
+        : 'Archive Notifications';
+      const selectedArch = selectedArchivedCards();
+      if (btnRestoreSelected) {
+        btnRestoreSelected.classList.toggle('hidden', selectedArch.length === 0);
+      }
+    }
+
+    function syncSelectionUi() {
+      const selected = selectedCards();
+      const selectedArch = selectedArchivedCards();
+      const visible = visibleCards();
+      const allSelected = visible.length > 0 && visible.every(function (card) {
+        const cb = card.querySelector('.notif-checkbox');
+        return cb && cb.checked;
+      });
+
+      selected.forEach(function (card) { card.classList.add('is-selected'); });
+      cards().forEach(function (card) {
+        const cb = card.querySelector('.notif-checkbox');
+        if (!cb || !cb.checked) card.classList.remove('is-selected');
+      });
+      selectedArch.forEach(function (card) { card.classList.add('is-selected'); });
+      archivedCards().forEach(function (card) {
+        const cb = card.querySelector('.notif-checkbox');
+        if (!cb || !cb.checked) card.classList.remove('is-selected');
+      });
+
+      const totalSelected = selected.length + selectedArch.length;
+      selectionCount.textContent = totalSelected + (totalSelected === 1 ? ' selected' : ' selected');
+      bulkActions.classList.toggle('is-visible', selected.length > 0);
+      btnSelectAllLabel.textContent = allSelected ? 'Deselect All' : 'Select All';
+      btnSelectAll.style.backgroundColor = allSelected ? '#334155' : '#059669';
+
+      const markEnabled = selected.length > 0 && selected.every(isUnread);
+      btnBulkMarkRead.classList.toggle('is-disabled', !markEnabled);
+      btnBulkMarkRead.disabled = !markEnabled;
+      btnBulkMarkReadWrap.classList.toggle('is-blocked', selected.length > 0 && !markEnabled);
+
+      updateArchiveButton();
+    }
+
+    function clearAllSelections() {
+      document.querySelectorAll('.notif-checkbox').forEach(function (cb) {
+        cb.checked = false;
+      });
+      document.querySelectorAll('.notif-card.is-selected').forEach(function (card) {
+        card.classList.remove('is-selected');
+      });
+      syncSelectionUi();
+    }
+
+    function setSelectMode(on) {
+      document.body.classList.toggle('select-mode', on);
+      btnSelectModeLabel.textContent = on ? 'Cancel' : 'Select';
+      if (!on) clearAllSelections();
+      else syncSelectionUi();
+    }
+
+    function toggleCardSelection(card) {
+      const cb = card.querySelector('.notif-checkbox');
+      if (!cb) return;
+      cb.checked = !cb.checked;
+      syncSelectionUi();
+    }
+
+    function onCardAreaClick(e) {
+      if (e.target.closest('a, button')) return;
+      const card = e.target.closest('.notif-card');
+      if (!card) return;
+      if (e.target.closest('.notif-check')) return;
+
+      const inInbox = listEl.contains(card);
+      const inArchive = archivedList.contains(card);
+      if (!inInbox && !inArchive) return;
+
+      if (document.body.classList.contains('select-mode')) {
+        e.preventDefault();
+        toggleCardSelection(card);
+        return;
+      }
+
+      // Document notifications only (inbox): open detail popup
+      if (inInbox && card.getAttribute('data-category') === 'documents') {
+        e.preventDefault();
+        openDocDetail(card);
+      }
+    }
+
+    function openDocDetail(card) {
+      const detailModal = document.getElementById('doc-detail-modal');
+      const title = (card.querySelector('.notif-title') || {}).textContent || 'Document Request';
+      document.getElementById('doc-detail-title').textContent = title.trim();
+
+      const metaEl = card.querySelector('.notif-meta');
+      document.getElementById('doc-detail-time').textContent = metaEl
+        ? metaEl.textContent.replace(/\s+/g, ' ').trim() || '—'
+        : '—';
+
+      const body = (card.querySelector('.notif-body') || {}).textContent || '';
+      document.getElementById('doc-detail-body').textContent = body.trim() || 'Details for this document request will appear here when available.';
+
+      detailModal.classList.add('is-open');
+      document.body.classList.add('overflow-hidden');
+
+      // Viewing a new/unread document notification marks it as read
+      if (isUnread(card)) {
+        markCardRead(card);
+        syncSelectionUi();
+      }
+    }
+
+    function closeDocDetail() {
+      const detailModal = document.getElementById('doc-detail-modal');
+      detailModal.classList.remove('is-open');
+      if (!archiveModal.classList.contains('is-open')) {
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
+    function loadArchive() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveArchive(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function categoryIcon(category) {
+      if (category === 'documents') {
+        return { bg: '#e0f2fe', color: '#0B2747', path: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' };
+      }
+      if (category === 'course' || category === 'enrollment') {
+        return { bg: '#f1f5f9', color: '#334155', path: 'M12 14l9-5-9-5-9 5 9 5z' };
+      }
+      return { bg: '#fff1f2', color: '#e11d48', path: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' };
+    }
+
+    function serializeCard(card) {
+      const title = (card.querySelector('.notif-title') || {}).textContent || '';
+      const body = (card.querySelector('.notif-body') || {}).textContent || '';
+      const metaEl = card.querySelector('.notif-meta');
+      const meta = metaEl ? metaEl.textContent.replace(/\s+/g, ' ').trim() : '';
+      const tag = (card.querySelector('.notif-tag') || {}).textContent || '';
+      const ref = (card.querySelector('.notif-ref') || {}).textContent || '';
+      return {
+        id: card.getAttribute('data-archived-id') || ('arch-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8)),
+        category: card.getAttribute('data-category') || 'system',
+        read: card.getAttribute('data-read') === 'true',
+        title: title.trim(),
+        body: body.trim(),
+        meta: meta,
+        tag: tag.trim(),
+        ref: ref.trim(),
+        archivedAt: new Date().toISOString()
+      };
+    }
+
+    function buildMainCard(item) {
+      const icon = categoryIcon(item.category);
+      const article = document.createElement('article');
+      const isRead = item.read !== false;
+      article.className = 'notif-card relative rounded-xl border shadow-sm overflow-hidden' + (isRead ? '' : ' pl-1');
+      article.setAttribute('data-category', item.category || 'system');
+      article.setAttribute('data-read', isRead ? 'true' : 'false');
+      article.innerHTML =
+        (isRead ? '' : '<div class="absolute left-0 top-0 bottom-0 w-1 unread-bar" style="background-color:#0B2747;"></div>') +
+        '<div class="flex gap-4 p-5">' +
+          '<label class="notif-check pt-1"><input type="checkbox" class="notif-checkbox" aria-label="Select notification"/></label>' +
+          '<div class="w-11 h-11 rounded-lg flex items-center justify-center shrink-0" style="background-color:' + icon.bg + '; color:' + icon.color + ';">' +
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="' + icon.path + '" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>' +
+          '</div>' +
+          '<div class="min-w-0 flex-1">' +
+            '<div class="flex items-start justify-between gap-3">' +
+              '<h3 class="notif-title text-sm font-bold"></h3>' +
+              '<span class="notif-meta shrink-0 text-xs whitespace-nowrap"></span>' +
+            '</div>' +
+            '<p class="notif-body text-sm mt-1 leading-relaxed"></p>' +
+            '<div class="flex flex-wrap items-center gap-2 mt-3 meta-row"></div>' +
+          '</div>' +
+        '</div>';
+      article.querySelector('.notif-title').textContent = item.title || '';
+      article.querySelector('.notif-body').textContent = item.body || '';
+      article.querySelector('.notif-meta').textContent = item.meta || '';
+      const row = article.querySelector('.meta-row');
+      if (item.tag) {
+        const tag = document.createElement('span');
+        tag.className = 'notif-tag inline-flex items-center rounded-full text-[10px] font-bold uppercase tracking-wide px-2.5 py-1';
+        tag.textContent = item.tag;
+        row.appendChild(tag);
+      }
+      if (item.ref) {
+        const ref = document.createElement('span');
+        ref.className = 'notif-ref text-xs font-medium';
+        ref.textContent = item.ref;
+        row.appendChild(ref);
+      }
+      return article;
+    }
+
+    function moveCardsToArchive(cardList) {
+      if (!cardList.length) return;
+      const stored = loadArchive();
+      cardList.forEach(function (card) {
+        stored.unshift(serializeCard(card));
+        card.remove();
+      });
+      saveArchive(stored);
+      renderArchived();
+      syncInboxEmpty();
+      syncSelectionUi();
+    }
+
+    function restoreArchivedItems(itemsToRestore) {
+      if (!itemsToRestore.length) return;
+      const remaining = loadArchive().filter(function (item) {
+        return !itemsToRestore.some(function (r) { return r.id === item.id; });
+      });
+      itemsToRestore.slice().reverse().forEach(function (item) {
+        listEl.appendChild(buildMainCard(item));
+      });
+      saveArchive(remaining);
+      renderArchived();
+      syncInboxEmpty();
+      syncSelectionUi();
+    }
+
+    function renderArchived() {
+      const items = loadArchive();
+      archivedList.innerHTML = '';
+
+      if (!items.length) {
+        archiveEmpty.classList.remove('hidden');
+        updateArchiveButton();
+        return;
+      }
+
+      archiveEmpty.classList.add('hidden');
+      items.forEach(function (item) {
+        const article = document.createElement('article');
+        article.className = 'notif-card relative rounded-xl border shadow-sm overflow-hidden';
+        article.setAttribute('data-archived-id', item.id);
+        article.setAttribute('data-category', item.category || 'system');
+        article.setAttribute('data-read', item.read === false ? 'false' : 'true');
+        article.innerHTML =
+          '<div class="flex gap-4 p-5">' +
+            '<label class="notif-check pt-1"><input type="checkbox" class="notif-checkbox" aria-label="Select archived notification"/></label>' +
+            '<div class="w-11 h-11 rounded-lg flex items-center justify-center shrink-0" style="background-color:#f1f5f9; color:#64748b;">' +
+              '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>' +
+            '</div>' +
+            '<div class="min-w-0 flex-1">' +
+              '<div class="flex items-start justify-between gap-3">' +
+                '<h3 class="notif-title text-sm font-bold"></h3>' +
+                '<span class="notif-meta shrink-0 text-xs whitespace-nowrap"></span>' +
+              '</div>' +
+              '<p class="notif-body text-sm mt-1 leading-relaxed"></p>' +
+              '<div class="flex flex-wrap items-center gap-2 mt-3">' +
+                (item.tag ? '<span class="notif-tag inline-flex items-center rounded-full text-[10px] font-bold uppercase tracking-wide px-2.5 py-1"></span>' : '') +
+                (item.ref ? '<span class="notif-ref text-xs font-medium"></span>' : '') +
+                '<span class="inline-flex items-center rounded-full text-[10px] font-bold uppercase tracking-wide px-2.5 py-1" style="background-color:#e2e8f0; color:#475569;">Archived</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        article.querySelector('.notif-title').textContent = item.title;
+        article.querySelector('.notif-body').textContent = item.body;
+        article.querySelector('.notif-meta').textContent = item.meta || 'Archived';
+        const tagEl = article.querySelector('.notif-tag');
+        if (tagEl) tagEl.textContent = item.tag;
+        const refEl = article.querySelector('.notif-ref');
+        if (refEl) refEl.textContent = item.ref;
+        archivedList.appendChild(article);
+      });
+      updateArchiveButton();
+    }
+
+    filters.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const filter = btn.getAttribute('data-filter');
+        setActiveFilter(btn);
+        applyFilter(filter);
+      });
+    });
+
+    listEl.addEventListener('change', function (e) {
+      if (e.target && e.target.classList.contains('notif-checkbox')) {
+        syncSelectionUi();
+      }
+    });
+
+    archivedList.addEventListener('change', function (e) {
+      if (e.target && e.target.classList.contains('notif-checkbox')) {
+        syncSelectionUi();
+      }
+    });
+
+    listEl.addEventListener('click', onCardAreaClick);
+    archivedList.addEventListener('click', onCardAreaClick);
+
+    document.getElementById('doc-detail-modal').querySelectorAll('[data-close-doc-detail]').forEach(function (el) {
+      el.addEventListener('click', closeDocDetail);
+    });
+
+    btnSelectMode.addEventListener('click', function () {
+      setSelectMode(!document.body.classList.contains('select-mode'));
+    });
+
+    btnSelectAll.addEventListener('click', function () {
+      const visible = visibleCards();
+      const allSelected = visible.length > 0 && visible.every(function (card) {
+        const cb = card.querySelector('.notif-checkbox');
+        return cb && cb.checked;
+      });
+      visible.forEach(function (card) {
+        const cb = card.querySelector('.notif-checkbox');
+        if (cb) cb.checked = !allSelected;
+      });
+      syncSelectionUi();
+    });
+
+    btnBulkMarkReadWrap.addEventListener('click', function () {
+      const selected = selectedCards();
+      if (!selected.length) return;
+      if (!selected.every(isUnread)) {
+        showToast('Mark as Read is only available for unread notifications.');
+      }
+    });
+
+    btnBulkMarkRead.addEventListener('click', function () {
+      const selected = selectedCards();
+      if (!selected.length) return;
+      if (!selected.every(isUnread)) {
+        showToast('Mark as Read is only available for unread notifications.');
+        return;
+      }
+      selected.forEach(markCardRead);
+      syncSelectionUi();
+    });
+
+    document.getElementById('btn-bulk-clear-read').addEventListener('click', function () {
+      const selected = selectedCards().filter(function (card) {
+        return !isUnread(card);
+      });
+      if (!selected.length) return;
+      moveCardsToArchive(selected);
+      showToast('Selected read notifications were moved to Archive.');
+    });
+
+    function restoreSelectedFromArchive() {
+      const selectedArch = selectedArchivedCards();
+      if (!selectedArch.length) return;
+      const ids = selectedArch.map(function (card) { return card.getAttribute('data-archived-id'); });
+      const toRestore = loadArchive().filter(function (item) { return ids.indexOf(item.id) !== -1; });
+      restoreArchivedItems(toRestore);
+      showToast('Selected notifications restored to inbox.');
+      updateArchiveButton();
+    }
+
+    btnRestoreSelected.addEventListener('click', restoreSelectedFromArchive);
+
+    btnArchive.addEventListener('click', function () {
+      if (archiveModal.classList.contains('is-open')) {
+        const selectedArch = selectedArchivedCards();
+        if (selectedArch.length > 0) {
+          restoreSelectedFromArchive();
+          return;
+        }
+        closeArchiveModal();
+        return;
+      }
+
+      const selectedMain = selectedCards();
+      if (selectedMain.length > 0) {
+        moveCardsToArchive(selectedMain);
+        showToast('Selected notifications moved to Archive.');
+      }
+
+      openArchiveModal();
+    });
+
+    archiveModal.querySelectorAll('[data-close-archive-modal]').forEach(function (el) {
+      el.addEventListener('click', closeArchiveModal);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (document.getElementById('doc-detail-modal').classList.contains('is-open')) {
+        closeDocDetail();
+        return;
+      }
+      if (archiveModal.classList.contains('is-open')) {
+        closeArchiveModal();
+      }
+    });
+
+    updateArchiveButton();
+    syncInboxEmpty();
+  })();
+</script>
+</body>
+</html>

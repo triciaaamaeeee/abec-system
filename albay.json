@@ -1,0 +1,92 @@
+[
+  {
+    "code": "0500501000",
+    "name": "Bacacay",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500502000",
+    "name": "Camalig",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500503000",
+    "name": "Daraga",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500504000",
+    "name": "Guinobatan",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500505000",
+    "name": "Jovellar",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500506000",
+    "name": "Legazpi City",
+    "type": "City"
+  },
+  {
+    "code": "0500507000",
+    "name": "Libon",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500508000",
+    "name": "Ligao City",
+    "type": "City"
+  },
+  {
+    "code": "0500509000",
+    "name": "Malilipot",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500510000",
+    "name": "Malinao",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500511000",
+    "name": "Manito",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500512000",
+    "name": "Oas",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500513000",
+    "name": "Pio Duran",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500514000",
+    "name": "Polangui",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500515000",
+    "name": "Rapu-Rapu",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500516000",
+    "name": "Santo Domingo",
+    "type": "Municipality"
+  },
+  {
+    "code": "0500517000",
+    "name": "Tabaco City",
+    "type": "City"
+  },
+  {
+    "code": "0500518000",
+    "name": "Tiwi",
+    "type": "Municipality"
+  }
+]

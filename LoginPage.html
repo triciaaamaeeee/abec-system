@@ -1,0 +1,607 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Portal Login - ABEC Institute</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<style data-purpose="layout-styling">
+    html, body {
+      height: 100%;
+      max-height: 100dvh;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', Inter, sans-serif;
+    }
+    h1, h2, h3 { letter-spacing: -0.02em; }
+    .bg-overlay {
+      background: linear-gradient(135deg, rgba(10, 37, 64, 0.8), rgba(26, 75, 122, 0.68));
+    }
+    .login-shell {
+      height: 100dvh;
+      max-height: 100dvh;
+      overflow: hidden;
+    }
+    .login-card-container {
+      width: min(100%, 34rem);
+      max-width: 100%;
+      max-height: min(96dvh, 100%);
+      display: flex;
+      flex-direction: column;
+    }
+    .login-card-body {
+      padding: clamp(1rem, 2.2vh, 2rem) clamp(1.25rem, 2.8vw, 2.5rem);
+      overflow: hidden;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    body.login-ready .login-card-container {
+      max-height: min(94dvh, 100%);
+      width: min(100%, 38rem);
+    }
+   @media (max-width: 768px) {
+      body.login-ready #branding-sidebar {
+        width: 40%;
+        flex: 0 0 40%;
+      }
+      body.login-ready main[data-purpose="login-container"] {
+        padding: 0;
+        height: 100dvh;
+        width: 60%;
+        flex: 0 0 60%;
+        align-items: stretch;
+      }
+      body.login-ready .login-card-container {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        box-shadow: none;
+        height: 100dvh;
+        max-height: 100dvh;
+      }
+      body.login-ready .login-card-body {
+        padding: clamp(1.25rem, 3vh, 2.5rem) clamp(2rem, 4vw, 3.25rem);
+        justify-content: center;
+      }
+    }
+    .login-card-container .input-field {
+      background-color: #FFFFFF !important;
+      background-image: none !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 0.75rem !important;
+      color: #0F172A !important;
+      caret-color: #0F172A;
+      box-shadow: inset 0 0 0 1000px #FFFFFF !important;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      padding-top: clamp(0.45rem, 1.1vh, 0.65rem) !important;
+      padding-bottom: clamp(0.45rem, 1.1vh, 0.65rem) !important;
+      font-size: 0.875rem;
+    }
+    .login-card-container .input-field:focus {
+      border-color: #93C5FD !important;
+      box-shadow: inset 0 0 0 1000px #FFFFFF, 0 0 0 3px rgba(27, 79, 122, 0.12) !important;
+    }
+    .login-card-container .input-field.is-filled {
+      background-color: #ECFDF5 !important;
+      border-color: #86EFAC !important;
+      box-shadow: inset 0 0 0 1000px #ECFDF5 !important;
+    }
+    .login-card-container .input-field.is-filled:focus {
+      border-color: #4ADE80 !important;
+      box-shadow: inset 0 0 0 1000px #ECFDF5, 0 0 0 3px rgba(34, 197, 94, 0.18) !important;
+    }
+    .login-card-container .input-field:-webkit-autofill,
+    .login-card-container .input-field:-webkit-autofill:hover,
+    .login-card-container .input-field:-webkit-autofill:focus,
+    .login-card-container .input-field:-webkit-autofill:active {
+      -webkit-text-fill-color: #0F172A !important;
+      caret-color: #0F172A;
+      border: 1px solid #E2E8F0 !important;
+      transition: background-color 99999s ease-out 0s;
+      box-shadow: inset 0 0 0 1000px #FFFFFF !important;
+    }
+    .login-card-container .input-field.is-filled:-webkit-autofill,
+    .login-card-container .input-field.is-filled:-webkit-autofill:hover,
+    .login-card-container .input-field.is-filled:-webkit-autofill:focus,
+    .login-card-container .input-field.is-filled:-webkit-autofill:active {
+      border-color: #86EFAC !important;
+      box-shadow: inset 0 0 0 1000px #ECFDF5 !important;
+    }
+    .password-field {
+      position: relative;
+    }
+    .password-field .input-field {
+      padding-right: 2.75rem !important;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border: 0;
+      background: transparent;
+      color: #64748B;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .password-toggle:hover {
+      color: #0B2747;
+      background: rgba(15, 23, 42, 0.04);
+    }
+    .password-toggle .icon-eye-off {
+      display: none;
+    }
+    .password-toggle.is-visible .icon-eye {
+      display: none;
+    }
+    .password-toggle.is-visible .icon-eye-off {
+      display: block;
+    }
+    .login-tab {
+      border-bottom: 1px solid #EEF2F7;
+      color: #64748B;
+      font-weight: 500;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      padding-top: clamp(0.5rem, 1.2vh, 0.75rem);
+      padding-bottom: clamp(0.5rem, 1.2vh, 0.75rem);
+    }
+    .login-tab:hover,
+    .login-tab.active {
+      color: #0B2747;
+      font-weight: 650;
+      border-bottom-color: #1B4F7A;
+    }
+    /* Fixed-size form stack: all panels share one cell so switching never resizes */
+    .panel-stack {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      width: 100%;
+      align-items: stretch;
+    }
+    .panel-stack > .form-panel {
+      grid-area: 1 / 1;
+      width: 100%;
+      transition: opacity 0.22s ease;
+    }
+    .panel-stack > .form-panel.panel-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .panel-stack > .form-panel:not(.panel-hidden) {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 1;
+    }
+
+    /* Welcome vs login stage: collapse welcome after continue; keep login stage stable */
+    .login-stage-stack {
+      position: relative;
+      width: 100%;
+    }
+    .login-stage-stack > .login-stage {
+      transition: opacity 0.3s ease;
+      width: 100%;
+    }
+    .login-stage.stage-hidden {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      height: 0;
+      overflow: hidden;
+    }
+    .login-stage:not(.stage-hidden) {
+      position: relative;
+      opacity: 1;
+      visibility: visible;
+      height: auto;
+      overflow: visible;
+    }
+    body.login-ready #stage-login {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    body.login-ready .panel-stack {
+      flex: 0 0 auto;
+      width: 100%;
+    }
+    .welcome-accent {
+      width: 2.5rem;
+      height: 0.2rem;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #1A4B7A, #93C5FD);
+    }
+    #branding-sidebar {
+      display: none !important;
+      height: 100dvh;
+      width: 42%;
+      flex: 0 0 42%;
+      max-height: 100dvh;
+    }
+    body.login-ready #branding-sidebar {
+      display: flex !important;
+    }
+   @media (max-width: 768px) {
+      body.login-ready #branding-sidebar {
+        display: flex !important;
+      }
+    }
+    #branding-sidebar .brand-copy {
+      font-size: clamp(1.75rem, 4.2vh, 3rem);
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+    }
+    #branding-sidebar .brand-desc {
+      font-size: clamp(0.75rem, 1.5vh, 0.875rem);
+    }
+    .form-panel {
+      padding: clamp(0.75rem, 1.8vh, 1.25rem) !important;
+    }
+    .form-panel form {
+      gap: clamp(0.55rem, 1.4vh, 1rem) !important;
+    }
+    .form-compact-actions {
+      padding-top: clamp(0.5rem, 1.5vh, 1rem) !important;
+    }
+    .login-title {
+      font-size: clamp(1.25rem, 2.8vh, 1.5rem);
+      margin-bottom: 0.25rem;
+    }
+    .login-subtitle {
+      font-size: clamp(0.75rem, 1.5vh, 0.875rem);
+    }
+    .stage-login-header {
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+    }
+    .login-tabs {
+      margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem);
+    }
+  </style>
+</head>
+<body class="abec-public-surface login-shell flex items-stretch">
+<!-- BEGIN: Hero Section (Left Side) — shown after Continue to Sign In -->
+<section id="branding-sidebar" class="flex-col relative text-white overflow-hidden" data-purpose="branding-sidebar">
+<!-- Background Image with Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="ABEC Logo" class="absolute inset-0 w-full h-full object-cover" src="../../wwwroot/images/Photo11ABECBuilding.png">
+<div class="absolute inset-0 bg-overlay"></div>
+</div>
+<!-- Back Button -->
+<div class="relative z-10 p-6 xl:p-8">
+<a href="/Home/Landing">
+<button type="button" data-abec-back-btn="true" onclick="showView('overview')" class="abec-back-btn">
+<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7"></path></svg>
+</button>
+      </a>
+</div>
+<!-- Main Text Content -->
+<div class="relative z-10 flex-grow flex flex-col justify-center px-8 xl:px-12 pb-8">
+<h1 class="brand-copy font-bold tracking-tight leading-[1.1]">
+        Advancing Careers<br>through<br>Excellence
+      </h1>
+<p class="brand-desc text-slate-300 max-w-md leading-relaxed">
+        Access your ABEC Training Application Dashboard by logging in to your account. Sign in using your registered credentials to view your application status, manage your information, and access available training services.
+      </p>
+</div>
+<!-- Institutional Branding Footer -->
+<div class="relative z-10 p-6 xl:p-8 mt-auto flex items-center gap-3">
+<img alt="ABEC Logo" class="w-8 h-8 object-contain shrink-0" src="../../wwwroot/images/Photo2ABECLogo.png">
+<span class="font-bold text-sm xl:text-lg tracking-tight leading-snug">ABEC Institute of Business and Technology Inc.</span>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Login Section (Right Side) -->
+<main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-0 min-h-0 overflow-hidden" data-purpose="login-container">
+<div class="abec-card abec-card-static login-card-container overflow-hidden">
+<div class="login-card-body">
+<div class="login-stage-stack">
+<!-- Welcome intro (shown first) -->
+<div id="stage-welcome" class="login-stage" data-purpose="welcome-card">
+  <div class="flex flex-col items-center text-center py-1">
+    <a href="/Home/Landing" class="self-start inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-abec-blue transition-colors mb-4">
+      <button type="button" data-abec-back-btn="true" onclick="showView('overview')" class="abec-back-btn">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7"></path></svg>
+      </button>
+    </a>
+    <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm flex items-center justify-center mb-4">
+      <img alt="ABEC Logo" class="w-9 h-9 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    </div>
+    <h2 class="login-title font-bold text-slate-900 tracking-tight mb-2">
+     Welcome to ABEC<br>
+     Institute of Business and Technology Inc.
+    </h2>
+    <div class="welcome-accent mx-auto mb-3" aria-hidden="true"></div>
+    <p class="login-subtitle text-slate-500 leading-relaxed max-w-sm mb-1">
+      Online Enrollment and Document Release Tracking System
+      Sign in securely to manage applications, courses, activations, and document requests in one professional workspace.
+    </p> <br>
+    <button type="button" class="abec-btn abec-btn-primary w-full max-w-xs py-2.5" onclick="showLoginStage()">
+      Sign in
+    </button>
+    <p class="text-[11px] text-slate-400 mt-4">
+      Authorized personnel and enrolled students only
+    </p>
+  </div>
+</div>
+
+<!-- Login forms (revealed after welcome) -->
+<div id="stage-login" class="login-stage stage-hidden" data-purpose="login-forms">
+<!-- Title and Subtitle -->
+<div class="stage-login-header">
+<h2 class="login-title font-bold text-slate-900 tracking-tight">Login</h2>
+<p class="login-subtitle text-slate-500">Please select your account type to proceed.</p>
+</div>
+<!-- Login Tabs -->
+<div class="flex login-tabs text-sm" data-purpose="login-type-tabs">
+<button id="tab-student" class="flex-1 text-center login-tab" type="button" onclick="switchLoginTab('student')">Student Login</button>
+<button id="tab-admin" class="flex-1 text-center login-tab active" type="button" onclick="switchLoginTab('admin')">Admin Login</button>
+</div>
+<div class="panel-stack">
+<!-- Admin Login Panel -->
+<div id="panel-admin" class="form-panel border border-slate-100 rounded-2xl p-6 bg-slate-50/50" data-purpose="admin-login-form">
+<form action="#" class="flex flex-col" method="POST" autocomplete="off">
+<!-- Email Input -->
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="email">Email:</label>
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="email" name="email" type="email" value="" autocomplete="off">
+</div>
+<!-- Password Input -->
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="password">Password</label>
+<div class="password-field">
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="password" name="password" type="password" value="" autocomplete="new-password">
+<button type="button" class="password-toggle" data-target="password" aria-label="Show password" title="Show password" onclick="togglePasswordVisibility(this)">
+<svg class="icon-eye w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+<svg class="icon-eye-off w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+</button>
+</div>
+<div class="text-right mt-1">
+<a class="text-[10px] font-bold text-slate-800 hover:underline" href="#">Forget PIN?</a>
+</div>
+</div>
+<!-- Remember Me checkbox -->
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded-sm border-gray-300 text-slate-800 focus:ring-slate-500 bg-gray-200" id="remember" type="checkbox">
+<label class="text-[11px] text-gray-500" for="remember">Remember</label>
+</div>
+<!-- Login Button -->
+<div class="form-compact-actions">
+<button class="abec-btn abec-btn-primary w-full py-2.5" type="submit">
+                Login
+</div>
+</form>
+</div>
+<!-- Student Login Panel -->
+<div id="panel-student" class="form-panel panel-hidden border border-slate-100 rounded-2xl p-6 bg-slate-50/50" data-purpose="student-login-form">
+<form action="#" class="flex flex-col" method="POST" autocomplete="off">
+<!-- Email Input -->
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="student-email">Email:</label>
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="student-email" name="email" type="email" value="" autocomplete="off">
+</div>
+<!-- Security PIN Input -->
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="student-pin">Security PIN</label>
+<div class="password-field">
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="student-pin" name="pin" type="password" value="" inputmode="numeric" autocomplete="off">
+<button type="button" class="password-toggle" data-target="student-pin" aria-label="Show security PIN" title="Show security PIN" onclick="togglePasswordVisibility(this)">
+<svg class="icon-eye w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+<svg class="icon-eye-off w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+</button>
+</div>
+<div class="text-right mt-1">
+<a class="text-[10px] font-bold text-slate-800 hover:underline" href="#">Forget PIN?</a>
+</div>
+</div>
+<!-- Remember Me checkbox -->
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded-sm border-gray-300 text-slate-800 focus:ring-slate-500 bg-gray-200" id="student-remember" type="checkbox">
+<label class="text-[11px] text-gray-500" for="student-remember">Remember</label>
+</div>
+<!-- Login + Create Account Buttons -->
+<div class="form-compact-actions space-y-2">
+<button class="abec-btn abec-btn-primary w-full py-2.5" type="submit">
+                Login
+</button>
+<p class="text-center text-[11px] text-gray-500 mt-2">
+  Don't have an account?
+  <a
+    href="#"
+    class="font-bold text-slate-800 hover:underline ml-1"
+    onclick="switchLoginTab('register'); return false;">
+    Create Account
+  </a>
+</p>
+</button>
+</div>
+</form>
+</div>
+<!-- Create Account Panel -->
+<div id="panel-register" class="form-panel panel-hidden border border-slate-100 rounded-2xl bg-slate-50/50" data-purpose="register-form">
+<form action="#" class="flex flex-col" method="POST" autocomplete="off">
+<!-- Name Fields -->
+<div class="grid grid-cols-[1fr_1fr_52px] gap-2">
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-surname">Surname</label>
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-surname" name="surname" type="text" value="" autocomplete="off">
+</div>
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-firstname">First Name</label>
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-firstname" name="firstname" type="text" value="" autocomplete="off">
+</div>
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-mi">M.I.</label>
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-mi" name="mi" type="text" value="" maxlength="2" autocomplete="off">
+</div>
+</div>
+<!-- Email -->
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-email">Email Address</label>
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-email" name="email" type="email" value="" autocomplete="off">
+</div>
+<!-- Passwords -->
+<div class="grid grid-cols-2 gap-2">
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-password">Password</label>
+<div class="password-field">
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-password" name="password" type="password" value="" autocomplete="new-password">
+<button type="button" class="password-toggle" data-target="reg-password" aria-label="Show password" title="Show password" onclick="togglePasswordVisibility(this)">
+<svg class="icon-eye w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+<svg class="icon-eye-off w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+</button>
+</div>
+</div>
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-confirm">Confirm Password</label>
+<div class="password-field">
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-confirm" name="confirm" type="password" value="" autocomplete="new-password">
+<button type="button" class="password-toggle" data-target="reg-confirm" aria-label="Show confirm password" title="Show confirm password" onclick="togglePasswordVisibility(this)">
+<svg class="icon-eye w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+<svg class="icon-eye-off w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+</button>
+</div>
+</div>
+</div>
+<!-- Security PIN -->
+<div>
+<label class="block text-xs font-medium text-slate-700 mb-1" for="reg-pin">Security PIN</label>
+<div class="password-field">
+<input class="w-full input-field rounded-lg px-3 focus:ring-0 focus:border-slate-400 transition-all" id="reg-pin" name="pin" type="password" value="" inputmode="numeric" autocomplete="off">
+<button type="button" class="password-toggle" data-target="reg-pin" aria-label="Show security PIN" title="Show security PIN" onclick="togglePasswordVisibility(this)">
+<svg class="icon-eye w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+<svg class="icon-eye-off w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+</button>
+</div>
+<p class="text-[10px] text-gray-500 leading-snug mt-1">
+                PIN is issued by the ABEC Registrar after enrollment is approved.
+              </p>
+</div>
+<!-- Register Button -->
+<div class="form-compact-actions">
+<button class="abec-btn abec-btn-primary w-full py-2.5" type="submit">
+                Register
+</button>
+<p class="text-center text-[11px] text-gray-500 mt-2">
+                Already have an account?
+                <a class="font-bold text-slate-800 hover:underline" href="#" onclick="switchLoginTab('student'); return false;">Login</a>
+</p>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- end stage-login -->
+</div>
+<!-- end login-stage-stack -->
+<script data-purpose="login-tab-switching">
+  function showLoginStage() {
+    document.body.classList.add('login-ready');
+    document.getElementById('stage-welcome').classList.add('stage-hidden');
+    document.getElementById('stage-login').classList.remove('stage-hidden');
+    switchLoginTab('admin');
+  }
+
+  function togglePasswordVisibility(btn) {
+    var input = document.getElementById(btn.getAttribute('data-target'));
+    if (!input) return;
+    var show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.classList.toggle('is-visible', show);
+    var target = btn.getAttribute('data-target');
+    var fieldLabel = (target === 'student-pin' || target === 'reg-pin')
+      ? 'security PIN'
+      : (target === 'reg-confirm' ? 'confirm password' : 'password');
+    var label = show ? 'Hide' : 'Show';
+    btn.setAttribute('aria-label', label + ' ' + fieldLabel);
+    btn.setAttribute('title', label + ' ' + fieldLabel);
+  }
+
+  function syncFilledState(el) {
+    if (!el || !el.classList.contains('input-field')) return;
+    el.classList.toggle('is-filled', el.value.trim().length > 0);
+  }
+
+  function clearAuthFields() {
+    [
+      'email', 'password',
+      'student-email', 'student-pin',
+      'reg-surname', 'reg-firstname', 'reg-mi',
+      'reg-email', 'reg-password', 'reg-confirm', 'reg-pin'
+    ].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.value = '';
+        if (id === 'password' || id === 'student-pin' || id === 'reg-password' || id === 'reg-confirm' || id === 'reg-pin') {
+          el.type = 'password';
+        }
+        syncFilledState(el);
+      }
+    });
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+      btn.classList.remove('is-visible');
+      var target = btn.getAttribute('data-target');
+      var fieldLabel = (target === 'student-pin' || target === 'reg-pin')
+        ? 'security PIN'
+        : (target === 'reg-confirm' ? 'confirm password' : 'password');
+      btn.setAttribute('aria-label', 'Show ' + fieldLabel);
+      btn.setAttribute('title', 'Show ' + fieldLabel);
+    });
+  }
+
+  function switchLoginTab(which) {
+    document.getElementById('panel-student').classList.toggle('panel-hidden', which !== 'student');
+    document.getElementById('panel-admin').classList.toggle('panel-hidden', which !== 'admin');
+    document.getElementById('panel-register').classList.toggle('panel-hidden', which !== 'register');
+    // The registration form belongs to the student flow, so keep that tab lit
+    document.getElementById('tab-student').classList.toggle('active', which === 'student' || which === 'register');
+    document.getElementById('tab-admin').classList.toggle('active', which === 'admin');
+  }
+
+  function initFilledInputs() {
+    document.querySelectorAll('.login-card-container .input-field').forEach(function (el) {
+      syncFilledState(el);
+      el.addEventListener('input', function () { syncFilledState(el); });
+      el.addEventListener('change', function () { syncFilledState(el); });
+      el.addEventListener('blur', function () { syncFilledState(el); });
+    });
+  }
+
+  function refreshFilledStates() {
+    document.querySelectorAll('.login-card-container .input-field').forEach(syncFilledState);
+  }
+
+  // Keep all auth fields blank by default (overrides browser autofill)
+  document.addEventListener('DOMContentLoaded', function () {
+    clearAuthFields();
+    initFilledInputs();
+  });
+  window.addEventListener('pageshow', function () {
+    clearAuthFields();
+    refreshFilledStates();
+  });
+  setTimeout(function () { clearAuthFields(); refreshFilledStates(); }, 100);
+  setTimeout(function () { clearAuthFields(); refreshFilledStates(); }, 500);
+  setTimeout(refreshFilledStates, 1000);
+</script>
+</div>
+</div>
+</main>
+<!-- END: Login Section -->
+</body></html>

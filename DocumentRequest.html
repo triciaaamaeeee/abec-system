@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Document Request - ABEC Student</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="../../wwwroot/css/abec-ui.css" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        },
+        colors: {
+          'abec-navy': '#0A2540',
+          'abec-sidebar-active': 'rgba(255,255,255,0.08)',
+          'abec-blue': '#1A4B7A',
+          'surface': '#F7F9FC',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Plus Jakarta Sans', Inter, sans-serif; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+</style>
+</head>
+<body class="abec-app bg-surface font-sans text-slate-800">
+<div class="flex min-h-screen">
+
+<!-- ========== SIDEBAR (BEGIN) ========== -->
+<aside class="abec-sidebar" data-purpose="main-sidebar">
+  <div class="p-6 flex items-center gap-3">
+    <img alt="ABEC Logo" class="w-10 h-10 object-contain" src="../../wwwroot/images/Photo2ABECLogo.png">
+    <div>
+      <h1 class="abec-brand-title">ABEC</h1>
+      <p class="abec-brand-sub">Institute of Business and Technology Inc.</p>
+    </div>
+  </div>
+  <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+    <a class="abec-nav-link" href="StudentDashboard.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Dashboard
+    </a>
+    <a class="abec-nav-link" href="ClassSchedule.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Class Schedules
+    </a>
+    <a class="abec-nav-link abec-nav-link-active" href="DocumentRequest.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Document Requests
+    </a>
+    <a class="abec-nav-link" href="Notifications.html">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+      Notifications
+    </a>
+  </nav>
+  <div class="abec-sidebar-footer">
+    <div class="abec-profile-chip">
+      <div class="w-10 h-10 rounded-full bg-white/15 text-white text-[11px] font-bold flex items-center justify-center shrink-0">ST</div>
+      <div class="overflow-hidden">
+        <p class="text-xs font-semibold truncate">Student</p>
+        <p class="text-[10px] text-white/45">Student</p>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <a class="abec-footer-link" href="UserSettings.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        User Settings
+      </a>
+      <a class="abec-footer-link" href="../Home/SignOutPage.html">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Sign Out
+      </a>
+    </div>
+  </div>
+</aside>
+<!-- ========== SIDEBAR (END) ========== -->
+
+<main class="abec-main min-h-screen">
+  <header class="mb-6">
+    <h2 class="text-2xl font-bold text-abec-navy">Document Request</h2>
+  </header>
+
+  <div class="space-y-6">
+    <!-- Post-Course Credentials -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <div class="mb-5">
+        <h3 class="text-lg font-bold text-abec-navy">Post-Course Credentials</h3>
+        <p class="text-sm text-slate-500 mt-1">Official academic credentials automatically issued upon successful course completion and clearance.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Transcript of Records -->
+        <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-4 py-4">
+          <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 text-abec-navy">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-bold text-abec-navy truncate">Transcript of Records</p>
+            <p class="text-xs text-slate-500">Full academic history</p>
+          </div>
+          <span class="inline-flex items-center gap-1.5 shrink-0 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1">
+            —
+          </span>
+        </div>
+
+        <!-- Official Diploma -->
+        <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-4 py-4">
+          <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 text-abec-navy">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M12 14v7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-bold text-abec-navy truncate">Official Diploma</p>
+            <p class="text-xs text-slate-500">Certificate of Graduation</p>
+          </div>
+          <span class="inline-flex items-center gap-1.5 shrink-0 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1">
+            —
+          </span>
+        </div>
+
+        <!-- National Certificate II -->
+        <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-4 py-4">
+          <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 text-abec-navy">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-bold text-abec-navy truncate">National Certificate II</p>
+            <p class="text-xs text-slate-500">TESDA Accreditation</p>
+          </div>
+          <span class="inline-flex items-center gap-1.5 shrink-0 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1">
+            —
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Requests -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-5 border-b border-slate-100">
+        <h3 class="text-lg font-bold text-abec-navy">Recent Requests</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left min-w-[720px]">
+          <thead class="bg-slate-50/80 border-b border-slate-100">
+            <tr class="text-sm font-bold text-abec-navy">
+              <th class="px-6 py-4">Request ID</th>
+              <th class="px-6 py-4">Document Type</th>
+              <th class="px-6 py-4">Date Requested</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4">Purpose</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-sm">
+            <tr>
+              <td colspan="5" class="px-6 py-10 text-center text-sm text-slate-500">No recent document requests.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Request Guidelines + New Request -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-4 h-4 text-abec-blue shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+        <h3 class="text-lg font-bold text-abec-navy">Request Guidelines</h3>
+      </div>
+      <ul class="list-disc pl-5 space-y-1.5 text-sm text-slate-600 mb-6">
+        <li>Select the document you need.</li>
+        <li>Choose the reason for your request.</li>
+        <li>Verify that all information is correct.</li>
+        <li>Wait for the administrator's review.</li>
+        <li>Track your request status in Recent Request.</li>
+        <li>Check your notifications for updates and release instructions.</li>
+      </ul>
+      <div class="flex justify-end">
+        <button type="button" id="btn-new-request" class="bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold px-5 py-2.5 rounded-md flex items-center gap-2 transition-colors shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Request New Document
+        </button>
+      </div>
+    </section>
+  </div>
+</main>
+
+</div>
+
+<!-- New Request Modal -->
+<div id="new-request-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="new-request-title">
+  <div class="absolute inset-0 bg-abec-navy/50 backdrop-blur-[1px]" data-close-modal></div>
+  <div class="relative bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between gap-3 px-6 py-5 border-b border-slate-200">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-abec-navy text-white flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </div>
+        <h3 id="new-request-title" class="text-lg font-bold text-abec-navy">Request Document</h3>
+      </div>
+    </div>
+
+    <form id="new-request-form" class="px-6 py-5 space-y-3">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+        <div class="flex items-center gap-2 mb-1.5">
+          <svg class="w-4 h-4 text-amber-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+          <p class="text-sm font-bold text-amber-800">Important Reminder</p>
+        </div>
+        <p class="text-xs leading-relaxed text-amber-900/80">Please request a document only if you genuinely need it and no longer have an existing copy. Make sure your reason is valid, as all requests will be reviewed by the ABEC Administration. Approval is subject to document request policies, including verification of your student status, payment records (if applicable), and eligibility for document release. Submitting a request does not guarantee approval.</p>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label for="req-full-name" class="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+          <input id="req-full-name" name="fullName" type="text" class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abec-blue focus:ring-abec-blue" placeholder="Enter your full name"/>
+        </div>
+        <div>
+          <label for="req-contact" class="block text-sm font-medium text-slate-700 mb-1.5">Contact</label>
+          <input id="req-contact" name="contact" type="text" class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abec-blue focus:ring-abec-blue" placeholder="Enter your contact number or email"/>
+        </div>
+        <div>
+          <label for="req-course" class="block text-sm font-medium text-slate-700 mb-1.5">Course/Program</label>
+          <select id="req-course" name="course" class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-abec-blue focus:ring-abec-blue">
+            <option value="" disabled selected>Choose course/program...</option>
+            <option value="bookkeeping">Bookkeeping NC II</option>
+            <option value="css">Computer System Servicing NC II</option>
+            <option value="customer">Customer Services NC II</option>
+            <option value="epas">Electronic Product Assembly and Servicing NC II</option>
+          </select>
+        </div>
+        <div>
+          <label for="req-document" class="block text-sm font-medium text-slate-700 mb-1.5">Document Type</label>
+          <select id="req-document" name="documentType" class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-abec-blue focus:ring-abec-blue">
+            <option value="" disabled selected>Choose document...</option>
+            <option value="tor">Official Transcript of Records</option>
+            <option value="diploma">Official Diploma</option>
+            <option value="nc2">National Certificate II</option>
+            <option value="coa">Certificate of Completion</option>
+          </select>
+        </div>
+        <div>
+          <label for="req-purpose" class="block text-sm font-medium text-slate-700 mb-1.5">Purpose of Request</label>
+          <select id="req-purpose" name="purpose" class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-abec-blue focus:ring-abec-blue">
+            <option value="job" selected>Job Application</option>
+            <option value="school">Further Studies</option>
+            <option value="personal">Personal Records</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full bg-abec-navy hover:bg-[#1A4B7A] text-white text-sm font-bold px-5 py-3 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm">
+        Submit Request
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="../../wwwroot/js/sidebar-auto-hide.js"></script>
+<script>
+  (function () {
+    const modal = document.getElementById('new-request-modal');
+    const openBtn = document.getElementById('btn-new-request');
+    const form = document.getElementById('new-request-form');
+
+    function openModal() {
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    openBtn.addEventListener('click', openModal);
+    modal.querySelectorAll('[data-close-modal]').forEach(function (el) {
+      el.addEventListener('click', closeModal);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      closeModal();
+    });
+  })();
+</script>
+</body>
+</html>
